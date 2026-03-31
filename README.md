@@ -83,13 +83,13 @@ If this process felt slower or more involved than expected, that’s completely 
     ```
 
 
-## C. Project 1: 
+## C. Project 1: "Fair" ML in healthcare
 
 In this project, we will be exploring what it means to develop "fair" machine learning models. As ML is increasingly deployed in real-world settings such as healthcare, it is more important than ever that practitioners think carefully about how these models may lead to unfair outcomes.
 
 The field of algorithmic fairness often focuses on technical definitions of fairness, that is, metrics or constraints that a model should satisfy to be deemed "fair". However, as we will see throughout this project, *fairness is not one-size-fits-all*. What it means for a model to be fair depends heavily on the context: what the model is predicting, who it affects, and how it is used in practice.
 
-The goal of this project is to critically evaluate existing fairness metrics and potentially design fairness methods that better fit the problem setting.
+Project Goal: This project will have students look at several different ML prediciton models, and design how they think a "fair" model should be measured in each problem setting. They will evaluate their model using existing fairness metrics (such as demographic parity) and also introduce new metrics found either in literature or devised on their own.  oal of this project is to evaluate existing fairness metrics and potentially design fairness methods that better fit the problem setting.
 
 ### Week 1: 
 **Onboarding:** 
@@ -97,14 +97,15 @@ The goal of this project is to critically evaluate existing fairness metrics and
  - Follow the [instructions provided in section B.](#b-getting-started) to get setup with the code and data.
 
 **Readings:**
-- [An Empirical Characterization of Fair Machine Learning For Clinical Risk Prediction](http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/): Please read and use for Assignment 1. 
-- [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z) 
+- [An Empirical Characterization of Fair Machine Learning For Clinical Risk Prediction](http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/): Please read and use for Assignment 1.
+- [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z): Review paper, feel free to skim parts that are already familiar to you. 
+- [The accuracy, fairness, and limits of predicting recidivism](https://www.science.org/doi/10.1126/sciadv.aao5580): If you've heard of the famous COMPAS fairness example, this is the original paper.  
 
 
 **Notebook:** 
-- Walk through the notebook `week1_data_explore.ipynb` to become familiar with the eICU dataset. 
+- Walk through the notebook `week1_explore_eicu_data.ipynb` to become familiar with the eICU dataset. 
 
-*For Assignment 1:*  Please read [An Empirical Characterization...]((http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/)) (for Part A: Read a Paper) and turn in your outputs of `week1_explore_eicu_data.ipynb` as a pdf (for Part 2: Section Starter Task).
+*For Assignment 1:*  Please read [An Empirical Characterization...]((http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/)) (for Part A: Read a Paper) and turn in your outputs of section *3. Section Starter: Now it's your turn!* in `week1_explore_eicu_data.ipynb` as a pdf (as this assignment's Part 2: Section Starter Task).
 
 
 ### Week 2: 
@@ -122,11 +123,11 @@ The goal of this project is to critically evaluate existing fairness metrics and
 - Watch [this video](https://www.youtube.com/watch?v=MzuoWAk9_AQ) from 21:00 to 1:21:00
 
 **Notebook:** 
-- Walk through the notebook `week2_alg_fairness.ipynb` to become familiar with algorithmic fairness calculations. 
+- Walk through and complete the notebook `proj1/week2_alg_fairness.ipynb` to become familiar with algorithmic fairness calculations. Note: We will not be requiring you to submit this notebook, but strongly encourage you to go through it. 
 
-*For Assignment 2:* 
+*(For Assignment 2)[https://web.stanford.edu/class/cs197/assignments/project.html#related-work]:* You will explore related work in this field. Please see the "nearest-neighbor" papers (some of which are already required reading!) for this project [here](https://docs.google.com/document/d/13f0qvsKWXfYImT402iGCmlkNrlqoTNogX6TQ_Ts-nuI/edit?usp=sharing). 
 
-*For Progress Reprot I:*
+*For Progress Report I:* Go through the assignments in `proj1/week2_alg_fairness.ipynb`. Either submit your final output of the notebook as a pdf or write up a condensed summary of your findings from the notebook. 
 
 ### Week 3: 
 
