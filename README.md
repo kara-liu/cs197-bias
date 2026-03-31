@@ -12,7 +12,7 @@ In this project, we will be working with the [eICU Collaborative Research Databa
 [^1] Tabular means any dataset that contains a mixture of both discrete (country of origin, has hypertension, ...) and continuous (age, height, ....) variables with separate columns.
 ---
 
-## Course Structure & Timeline
+## A. Course Structure & Timeline
 
 This 10-week project is divided into two phases:
 
@@ -25,10 +25,10 @@ Project 1: Missingness and selection bias
 Project 2: Fairness
 Project 3: Proxy learning 
 
-## Shared 
+## B. Getting started 
 
-#### A. (IMPORTANT) Data Access
-Please complete this step **as soon as possible**, as it will take a bit of time.
+### Data Access
+(IMPORTANT) Please complete this step **as soon as possible**, as it will take a bit of time.
 
 1. First, you must request approval for the eICU dataset. To do so, follow the instructions [here](https://eicu-crd.mit.edu/gettingstarted/access/) which consists of three steps: 
     * Complete required CITI training (needed to work with patient data, even if de-identified; takes ~30 minutes  - 2 hours)
@@ -40,7 +40,7 @@ Please complete this step **as soon as possible**, as it will take a bit of time
     wget -r -N -c -np https://physionet.org/files/eicu-crd-demo/2.0.1/
     ```
     You do not need to unzip the individual files, we will be reading the `*.csv.gz` files directly. 
-4. Once you are granted access to the full eICU dataset (expected in Week 2), you can navigate to the [project page](https://physionet.org/content/eicu-crd/2.0/) to start downloading the full eICU dataset. You can download via the terminal command:
+4. Once you are granted access to the full eICU dataset (expected in Week 2), you can navigate to the [full dataset's page](https://physionet.org/content/eicu-crd/2.0/) to start downloading the full eICU dataset. You can download via the terminal command:
     ```
     wget -r -N -c -np --user {YOUR_PHYSIONET_USERNAME} --ask-password https://physionet.org/files/eicu-crd/2.0/
     ```
@@ -58,7 +58,7 @@ Congratulations! You now have access to a real-world clinical dataset.
 If this process felt slower or more involved than expected, that’s completely normal. Working with real-world data often includes several time-consuming steps, but the reward is working with data that contains real patient information. This tradeoff is all part of the reserach process.
 
 
-#### B. Setting up the environment
+### Setting up the environment
 
 1. If you haven't already, install [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) or Anaconda, which will help manage your project's software packages.
 
@@ -82,7 +82,7 @@ If this process felt slower or more involved than expected, that’s completely 
     ```
 
 
-# Project 1: 
+## C. Project 1: 
 
 In this project, we will be exploring what it means to develop "fair" machine learning models. As ML is increasingly deployed in real-world settings such as healthcare, it is more important than ever that practitioners think carefully about how these models may lead to unfair outcomes.
 
@@ -90,42 +90,60 @@ The field of algorithmic fairness often focuses on technical definitions of fair
 
 The goal of this project is to critically evaluate existing fairness metrics and potentially design fairness methods that better fit the problem setting.
 
-## Weeks 1-3: Setting up the Foundations  
 ### Week 1: 
-**Onboarding:** Follow the [instructions provided above](#shared) to get setup with the code and data, which includes:
-* Apply for access to the full eICU dataset. It's ok if you don't have access by the end of this week; however, you should have acccess by Week 2. 
-* In the meantime, download the smaller eICU demo dataset. 
-* Download and setup the code. 
+**Onboarding:** 
+
+ - Follow the [instructions provided in section B.](#b-getting-started) to get setup with the code and data.
 
 **Readings:**
-* [Peeking into a black box, the fairness and generalizability of a MIMIC-III benchmarking model](https://www.nature.com/articles/s41597-021-01110-7): Please read for Assignment 1. 
+- [An Empirical Characterization of Fair Machine Learning For Clinical Risk Prediction](http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/): Please read and use for Assignment 1. 
+- [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z) 
 
-* [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z)
 
+**Notebook:** 
+- Walk through the notebook `week1_data_explore.ipynb` to become familiar with the eICU dataset. 
 
-**Notebook:** Walk through the notebook provided above to become familiar with the eICU dataset: `week1_data_explore.ipynb`. 
+*For Assignment 1:*  Please read [An Empirical Characterization...]((http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/)) (for Part A: Read a Paper) and turn in your outputs of `week1_data_explore.ipynb` as a pdf (for Part 2: Section Starter Task).
+
 
 ### Week 2: 
-**Onboarding:** By the end of the week, you should have been granted access by PhysioNet to the full eICU dataset. Email me if you do not. 
+**Onboarding:** 
+- By the end of the week, you should have been granted access by PhysioNet to the full eICU dataset. Email me if you have not received an email by then. 
 
 **Readings:**
-* [Peeking into a black box, the fairness and generalizability of a MIMIC-III benchmarking model](https://www.nature.com/articles/s41597-021-01110-7): Please read for Assignment 1. 
 
-* [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z)
+- [Peeking into a black box, the fairness and generalizability of a MIMIC-III benchmarking model](https://www.nature.com/articles/s41597-021-01110-7) 
+- [Dissecting racial bias in an algorithm used to manage the health of populations](https://www.science.org/doi/10.1126/science.aax2342)
+- [Ensuring Fairness in Machine Learning to Advance Health Equity](https://www.acpjournals.org/doi/epdf/10.7326/M18-1990)
+- [Algorithmic fairness in computational medicine](https://pmc.ncbi.nlm.nih.gov/articles/PMC9463525/)
 
+**Video:**
+- Watch [this video](https://www.youtube.com/watch?v=MzuoWAk9_AQ) from 21:00 to 1:21:00
 
-**Notebook:** Walk through the notebook provided above to become familiar with the eICU dataset: `week1_data_explore.ipynb`. 
+**Notebook:** 
+- Walk through the notebook `week2_alg_fairness.ipynb` to become familiar with algorithmic fairness calculations. 
+
+*For Assignment 2:* 
+
+*For Progress Reprot I:*
 
 ### Week 3: 
 
 
 **Readings:**
-* [Peeking into a black box, the fairness and generalizability of a MIMIC-III benchmarking model](https://www.nature.com/articles/s41597-021-01110-7): Please read for Assignment 1. 
 
-* [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z)
+**Readings:**
 
+- [Peeking into a black box, the fairness and generalizability of a MIMIC-III benchmarking model](https://www.nature.com/articles/s41597-021-01110-7) 
+- [Dissecting racial bias in an algorithm used to manage the health of populations](https://www.science.org/doi/10.1126/science.aax2342)
+- [Ensuring Fairness in Machine Learning to Advance Health Equity](https://www.acpjournals.org/doi/epdf/10.7326/M18-1990)
+- [Algorithmic fairness in computational medicine](https://pmc.ncbi.nlm.nih.gov/articles/PMC9463525/)
 
-**Notebook:** Walk through the notebook provided above to become familiar with the eICU dataset: `week1_data_explore.ipynb`. 
+**Video:**
+- Watch [this video](https://www.youtube.com/watch?v=MzuoWAk9_AQ) from 21:00 to 1:21:00
+
+**Notebook:** 
+- Walk through the notebook `week2_alg_fairness.ipynb` to become familiar with algorithmic fairness calculations. 
 
 ### Weeks 4-10: 
 
