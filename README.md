@@ -1,56 +1,68 @@
-# CS197 Project: Mitigating Biases in Healthcare Data
+# CS197 Project: Exploring Biases in Healthcare Data
 **Course Staff:** Kara Liu (contact: karaliu@stanford.edu)
 
 **PLEASE DO NOT SHARE THIS MATERIAL BEYOND CS197/CS195 AT STANFORD UNIVERSITY**
 
-In this project you will be researching all the "biases" in real-world tabular\footnote{Tabular means any dataset that contains a mixture of both discrete and continuous variables with separate columns. Think of data where we collect both age, height, and weight, as well as gender and country of origin.} datasets\footnote{"Bias" is a loaded term - we will clarify what we mean by this later.}. Real-world datasets, particularly in healthcare, are a rich source of information: they can help us understand trends, support real people like clinicians and patients, and contribute to meaningful research. At the same time, real-world data is often messy and imperfect.
-
-You may have heard the phrase "garbage in, garbage out" in the machine learning field, which emphasizes how important data quality is for learning a useful and accurage machine learning model. If the data is incomplete or noisy, the conclusions we draw may be inaccurate, and in some cases can even lead to disparities or unfair outcomes.
+In this project you will be explore how to detect and mitigate biases[^0] present in real-world tabular[^1] datasets. Real-world data, particularly in healthcare, are a rich source of information in research that can help us understand trends, test new methods, and support real people like clinicians and patients. However, this data is often messy and imperfect. The common phrase "garbage in, garbage out" emphasizes how important data quality is to learn useful and accurate machine learning (ML) models. If the data is incomplete or noisy, our models may draw wrong conclusions and can even lead to unfair outcomes.
 
 In this project, we will be working with the [eICU Collaborative Research Database (eICU-CRD)](https://eicu-crd.mit.edu/), a large, multi-center critical care dataset containing de-identified patient data from intensive care units (ICUs) across the United States. 
 
+[^0] Yes, "bias" is a loaded term. We will clarify what we mean by this later.
+
+[^1] Tabular means any dataset that contains a mixture of both discrete (country of origin, has hypertension, ...) and continuous (age, height, ....) variables with separate columns.
 ---
 
 ## Course Structure & Timeline
 
 This 10-week project is divided into two phases:
 
-* **Weeks 1-3: The Bootcamp.** Everyone will complete the same intensive curriculum, working through the foundational materials (notebooks 1-3 and the CG-ICO paper). This will give you a shared, deep understanding of the problem and our proposed solution.
+* **Weeks 1-3: Onboarding.** Everyone must apply for access to the data and will get familiar with real-world data, which many of you may have not worked with before. Then, Each project will provide its own specialized curriculum and students through the foundational materials with interactive notebooks and suggested readings.
 * **Weeks 4-10: Specialized Project Track.** Armed with this knowledge, you will choose a specialized project to own for the rest of the quarter, culminating in a final presentation and report.
 
----
+The projects are as follows, with the hyperlinks attached:
 
-## Phase 1: The Bootcamp (Weeks 1-3)
+Project 1: Missingness and selection bias
+Project 2: Fairness
+Project 3: Proxy learning 
 
-#### Getting Started 🚀
-1. **eICU Data Access** (IMPORTANT) YOu should apply for access **as soon as possible**. To use the data, you must : EL-.E,A2S@ayF!g
-    1. Follow the instructions [here](https://eicu-crd.mit.edu/gettingstarted/access/). This consists of three steps, all of which is further described in the instructions: 
-        * Complete required CITI training, which is needed to work with patient data, even if it is de-identified (should take <2 hours)
-        * Register for an account on PhysioNet
-        * Submit an application to PhysioNet for access to eICU data. *Note: When it asks for your supervisor name and email, you can give my contact info: Kara Liu, karaliu@stanford.edu*
-    2. Data acess will take about 1-5 days. If it is over 7 days and you have yet to hear back, email me. 
-    3. (Optional) While you wait for access, if you want to explore using the data  , you can download the eICU-CRD Demo dataset which is a small 2000 subsample of the full dataset of 200,0000 here: https://physionet.org/content/eicu-crd-demo/2.0.1/ by downloading the ZIP'd data file or calling the terminal command line: 
-    ```wget -r -N -c -np https://physionet.org/files/eicu-crd-demo/2.0.1/```
-    Note you do not need to unzip the individual files in the folder, you can just leave things as is. 
-    4. Once you are granted access to the eICU dataset, you can navigate to here https://physionet.org/content/eicu-crd/2.0/. Data downloading takes a while (about 6 hours for me) so I recommend starting this early. You can downlaod the data by calling the command line 
-    ```wget -r -N -c -np --user {YOUR_USERNAME} --ask-password https://physionet.org/files/eicu-crd/2.0/```
-    to which you will be prompted to put in your PhysioNet password. Then data data should start downloaded. Note this might take a while, as some of the files are quite big. 
-    5. The data should then be stored in a folder like 
-        ```
-        eicu-collaborative-research-database-demo-2.0.1/
-        | -- patient.csv.gz
-        | -- lab.csv.gz
-        ```
+## Shared 
+
+#### A. (IMPORTANT) Data Access
+Please complete this step **as soon as possible**, as it will take a bit of time.
+
+1. First, you must request approval for the eICU dataset. To do so, follow the instructions [here](https://eicu-crd.mit.edu/gettingstarted/access/) which consists of three steps: 
+    * Complete required CITI training (needed to work with patient data, even if de-identified; takes ~30 minutes  - 2 hours)
+    * Register for an account on PhysioNet
+    * Submit an application to PhysioNet for access to eICU data. *Note: When it asks for your supervisor name and email, you can give my contact info: Kara Liu, karaliu@stanford.edu*
+2. Data acess will take about 1-5 days. If it has been over 7 days since you submitted your PhysioNet application and you have yet to hear back, please email me. 
+3. While you wait for access, you can explore the [**demo** dataset](https://physionet.org/content/eicu-crd-demo/2.0.1/) which consists of about ~2,000 patients subsampled from the full ~200,000. You can download it via the terminal: 
+    ```
+    wget -r -N -c -np https://physionet.org/files/eicu-crd-demo/2.0.1/
+    ```
+    You do not need to unzip the individual files, we will be reading the `*.csv.gz` files directly. 
+4. Once you are granted access to the full eICU dataset (expected in Week 2), you can navigate to the [project page](https://physionet.org/content/eicu-crd/2.0/) to start downloading the full eICU dataset. You can download via the terminal command:
+    ```
+    wget -r -N -c -np --user {YOUR_PHYSIONET_USERNAME} --ask-password https://physionet.org/files/eicu-crd/2.0/
+    ```
+    which will prompt you for your PhysioNet password before starting the download. Note, downloading may take several hours (it took me about ~7) as some of the files are quite large. 
+5. After downloading, your folder should look something like
+    ```
+    eicu-collaborative-research-database-demo-2.0.1/
+    | -- patient.csv.gz
+    | -- lab.csv.gz
+    | -- ...
+    ```
 
 Congratulations! You now have access to a real-world clinical dataset.
 
-If this process felt slower or more involved than expected, that’s completely normal. Working with real-world data often includes steps like access approvals, large downloads, and unfamiliar formats, but the reward is working with real-world data that contains real patient information for our use. This tradeoff is all part of the reserach process.
+If this process felt slower or more involved than expected, that’s completely normal. Working with real-world data often includes several time-consuming steps, but the reward is working with data that contains real patient information. This tradeoff is all part of the reserach process.
 
-1. **Prerequisites**
-    If you haven't already, install [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) or Anaconda, which will help manage your project's software packages.
 
-2. **Setup the Environment**
-    Open your terminal and run the following commands. We will create a fresh environment to ensure your dependencies don't conflict with other projects.
+#### B. Setting up the environment
+
+1. If you haven't already, install [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) or Anaconda, which will help manage your project's software packages.
+
+2. Open your terminal and run the following commands. We will create a fresh environment to ensure your dependencies don't conflict with other projects.
     ```
     # Create an environment named 'cs197-bias' with Python 3.12
     conda create --name cs197-bias python=3.12
@@ -63,18 +75,83 @@ If this process felt slower or more involved than expected, that’s completely 
     cd cs197-bias # if you are not already there 
     pip install -r requirements.txt
     ```
-3. **Begin the Project**
-    You're all set! Start by launching Jupyter and opening the first notebook, `1_Introduction.ipynb`, to dive into the core concepts.
+
+3. Start by launching Jupyter and opening the first notebook, `1_Introduction.ipynb`, to dive into the core concepts.
     ```
     jupyter notebook
     ```
-    <!-- ***Note: If you are unable to import cg_rag inside the notebook, ensure you ran the pip install -e . command successfully.*** -->
-**Quick Run**
-Test by running the tokenizer in the `main.py` script. This file is configured with default values, which you can open and edit to experiment with different settings.
-```python main.py``
 
-**Week 1: Stage I - Learning Geometry**
-* **Objective:** Grasp the concept of "Structure Learning" using Dynamic Programming. How do we turn a stream of tokens into meaningful atomic units?
+
+# Project 1: 
+
+In this project, we will be exploring what it means to develop "fair" machine learning models. As ML is increasingly deployed in real-world settings such as healthcare, it is more important than ever that practitioners think carefully about how these models may lead to unfair outcomes.
+
+The field of algorithmic fairness often focuses on technical definitions of fairness, that is, metrics or constraints that a model should satisfy to be deemed "fair". However, as we will see throughout this project, *fairness is not one-size-fits-all*. What it means for a model to be fair depends heavily on the context: what the model is predicting, who it affects, and how it is used in practice.
+
+The goal of this project is to critically evaluate existing fairness metrics and potentially design fairness methods that better fit the problem setting.
+
+## Weeks 1-3: Setting up the Foundations  
+### Week 1: 
+**Onboarding:** Follow the [instructions provided above](#shared) to get setup with the code and data, which includes:
+* Apply for access to the full eICU dataset. It's ok if you don't have access by the end of this week; however, you should have acccess by Week 2. 
+* In the meantime, download the smaller eICU demo dataset. 
+* Download and setup the code. 
+
+**Readings:**
+* [Peeking into a black box, the fairness and generalizability of a MIMIC-III benchmarking model](https://www.nature.com/articles/s41597-021-01110-7): Please read for Assignment 1. 
+
+* [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z)
+
+
+**Notebook:** Walk through the notebook provided above to become familiar with the eICU dataset: `week1_data_explore.ipynb`. 
+
+### Week 2: 
+**Onboarding:** By the end of the week, you should have been granted access by PhysioNet to the full eICU dataset. Email me if you do not. 
+
+**Readings:**
+* [Peeking into a black box, the fairness and generalizability of a MIMIC-III benchmarking model](https://www.nature.com/articles/s41597-021-01110-7): Please read for Assignment 1. 
+
+* [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z)
+
+
+**Notebook:** Walk through the notebook provided above to become familiar with the eICU dataset: `week1_data_explore.ipynb`. 
+
+### Week 3: 
+
+
+**Readings:**
+* [Peeking into a black box, the fairness and generalizability of a MIMIC-III benchmarking model](https://www.nature.com/articles/s41597-021-01110-7): Please read for Assignment 1. 
+
+* [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z)
+
+
+**Notebook:** Walk through the notebook provided above to become familiar with the eICU dataset: `week1_data_explore.ipynb`. 
+
+### Weeks 4-10: 
+
+* As part of Assignment 1, we will be delving into a few key related works in this space. Please read the following works: 
+* Notebook: Explore how the data works 
+Week 2: 
+* More suggestions on what to read
+* Notebooks: start testing what these fairness concepts mean 
+Week 3: 
+* more suggestsions on what to read 
+* different outcomes, different fairness concepts
+Week 4:
+* fairness without awareness vs fairness with awareness nb? 
+Week 5:
+Week 6:
+Week 7: 
+Week 8: 
+Week 9:
+Week 10: 
+## Week 1: Setup
+This week, we'll
+
+    <!-- ***Note: If you are unable to import cg_rag inside the notebook, ensure you ran the pip install -e . command successfully.*** -->
+#### C. Brushing up on the material 
+
+**Objective:** Grasp the concept of "Structure Learning" using Dynamic Programming. How do we turn a stream of tokens into meaningful atomic units?
 * **Materials:**
     * `tutorials/1_The_Geometry_of_Coherence.ipynb`: A hands-on walkthrough of the L0-segmentation algorithm.
     * `pipelines -> OfflinePipeline`
