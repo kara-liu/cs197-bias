@@ -45,11 +45,12 @@ Project 3: Proxy learning
     wget -r -N -c -np --user {YOUR_PHYSIONET_USERNAME} --ask-password https://physionet.org/files/eicu-crd/2.0/
     ```
     which will prompt you for your PhysioNet password before starting the download. Note, downloading may take several hours (it took me about ~7) as some of the files are quite large. 
-5. After downloading, your folder should look something like
+5. After downloading, your folder (for me, it downloaded to the path `./physionet.org/files/eicu-crd/2.0/`) should look something like
     ```
-    eicu-collaborative-research-database-demo-2.0.1/
+    ./physionet.org/files/eicu-crd/2.0/
     | -- patient.csv.gz
     | -- lab.csv.gz
+    | -- hospital.csv.gz
     | -- ...
     ```
 
@@ -103,7 +104,7 @@ The goal of this project is to critically evaluate existing fairness metrics and
 **Notebook:** 
 - Walk through the notebook `week1_data_explore.ipynb` to become familiar with the eICU dataset. 
 
-*For Assignment 1:*  Please read [An Empirical Characterization...]((http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/)) (for Part A: Read a Paper) and turn in your outputs of `week1_data_explore.ipynb` as a pdf (for Part 2: Section Starter Task).
+*For Assignment 1:*  Please read [An Empirical Characterization...]((http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/)) (for Part A: Read a Paper) and turn in your outputs of `week1_explore_eicu_data.ipynb` as a pdf (for Part 2: Section Starter Task).
 
 
 ### Week 2: 
@@ -128,9 +129,6 @@ The goal of this project is to critically evaluate existing fairness metrics and
 *For Progress Reprot I:*
 
 ### Week 3: 
-
-
-**Readings:**
 
 **Readings:**
 
