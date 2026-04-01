@@ -21,7 +21,6 @@ This 10-week project is divided into two phases:
 * **Weeks 2-10: Specialized Project Track.** In Weeks 2 and 3, each project will provide its own specialized curriculum through interactive notebooks and suggested readings. In Weeks 4-10, you will choose a specialized project to own for the rest of the quarter, culminating in a final presentation and report.
 
 The projects are as follows, with the hyperlinks attached:
-## C. Project 1: Fair ML in healthcare
 
 - [Project 1: Fair ML in healthcare](#c-project-1-fair-ml-in-healthcare)
 - [Project 2: Exploring selection and missing data biases](#d-project-2-exploring-selection-and-missing-data-biases)
