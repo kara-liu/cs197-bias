@@ -91,6 +91,8 @@ The field of algorithmic fairness often focuses on technical definitions of fair
 
 Project Goal: In this project, you will examine ML prediction models on the eICU dataset and consider how a "fair" model should be defined and evaluated in each healthcare-inspired setting. Although you will first assess your models using existing fairness metrics (such as demographic parity), your group should explore or propose new metrics as part of your research contribution, either heavily inspired by existing literature or of your own design. During weeks 4 - 10, you will build toward a novel fairness contribution by following a set of suggested experiments to brainstorm new evaluation strategies, metrics, and considerations that are especially relevant in healthcare. These themes are meant to guide your thinking towards a new fairness evaluation metric, but your group may also propose new interventions to train or adjust models in order to improve fairness.
 
+We provide a more thorough description of developing your project under Weeks 7-8; please refer to this section often to guide your experiments in Weeks 1-6. 
+
 ### Week 1: 
 **Onboarding:** 
 
@@ -100,6 +102,11 @@ Project Goal: In this project, you will examine ML prediction models on the eICU
 - [An Empirical Characterization of Fair Machine Learning For Clinical Risk Prediction](http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/): Please read and use for Assignment 1.
 - [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z): Review paper, feel free to skim parts that are already familiar to you. 
 
+**Additional Readings:** Review papers on the general field of bias in healthcare data. Optional but highly encouraged. 
+- [Potential Biases in Machine Learning Algorithms Using Electronic Health Record Data](https://pmc.ncbi.nlm.nih.gov/articles/PMC6347576/)
+- [Unmasking bias in artificial intelligence: a systematic review of bias detection and mitigation strategies in electronic health record-based models](https://pubmed.ncbi.nlm.nih.gov/38520723/)
+- [Bias in medical AI: Implications for clinical decision-making](https://pmc.ncbi.nlm.nih.gov/articles/PMC11542778/)
+- [Lessons and tips for designing a machine learning study using EHR data](https://pmc.ncbi.nlm.nih.gov/articles/PMC8057454/)
 
 **Notebook:** 
 - Walk through the notebook `week1_explore_eicu_data.ipynb` to become familiar with the eICU dataset. 
@@ -137,6 +144,8 @@ Project Goal: In this project, you will examine ML prediction models on the eICU
 **Notebook:** 
 - Walk through the notebook `proj1/week3_fairness_tradeoffs.ipynb` to become familiar with fairness–performance tradeoffs when you try to invertene on the model to improve fairness. 
 
+**Bonus Notebook:** 
+- Feel free to check out the fairness evaluation on EHR data done [in this notebook](https://github.com/fairlearn/talks/blob/main/2021_scipy_tutorial/fairness-in-AI-systems-student.ipynb).
 
 **Bonus Readings:** 
 
@@ -151,7 +160,11 @@ These works provide deeper insight into why fairness tradeoffs arise. They are m
 ## Weeks 4-10: 
 In the next few weeks, you will expand upon what you have learned so far to propose a novel research project on fairness using the eICU dataset. We will provide a suggested outline for Weeks 4–10 to help you brainstorm new fairness evaluation strategies, metrics, and considerations that are particularly relevant in healthcare settings. For example, in Week 4, we will explore how missing data may itself be an important dimension of fairness that is not captured by standard metrics.
 
-While these weekly themes are meant to guide your thinking, you are not limited to them. You are also welcome to explore alternative directions, including proposing new interventions to train or adjust models in order to improve fairness. 
+While these weekly themes are meant to guide your thinking, you are not limited to them. You are also welcome to explore alternative directions, including:
+- Proposing new interventions to train or adjust models in order to improve fairness. 
+- Exploring the advanced but under-developed field of causality-based algorithmic fairness, such as path-specific fairness
+- Exploring fair representation learning of tabular or NLP data (note: the eICU dataset does not have free text for its note table)
+- Examining the role of using race in prediction tasks; this is similar to the idea of proximal learning whereby ML uses a variable that is only spurriously correlated with the variables we actually want to use 
 
 ### Week 4: 
 
@@ -190,4 +203,146 @@ You should also examine how your metric behaves under different conditions, such
 
 
 
-## Project 2: Exploring selection and missing data biases
+## D. Project 2: Exploring selection and missing data biases
+
+
+In this project, we will explore different aspects of selection bias in real-world data and how selection bias affects the generalization of ML models. Selection bias arises when the data we observe is not a random sample of the population we care about $^{[1]}$. For example, we may want to predict mortality risk across all adults in the U.S.. However, EHR data (as in our eICU case) typically only includes patients from certain geographical regions and oversamples for people who frequently interact with the healthcare system. As a result, the data available to us may not be representative of the target population, which can lead to models that do not generalize well.
+
+
+Project Goal: In this project, you will investigate how different forms of selection bias affect ML prediction models trained on the eICU dataset, with the goal of proposing a strategy to mitigate these biases. We will consider several types of bias, including temporal bias, bias due to missing data, and geographic bias. During Weeks 1–3, you will explore ways to detect and reason about selection bias, and examine how it impacts model performance. During Weeks 4–10, you will focus on developing and evaluating methods to address these biases. We provide a more thorough description for developing your project under Weeks 7-8; please refer to this section often to guide your experiments in Weeks 1-6. 
+
+$^{[1]}$: Many different fields have names for this phenomenon. It may also be called *distribution shift*, *data shift*, *dataset bias*, *sample* selection bias, and in some cases, *covariate shift*. In ML, you might see that the field of domain adaptation is relevant for selection bias. The term *selection bias* I am using has its origins in the field of causal inference.
+
+
+### Week 1: 
+**Onboarding:** 
+
+ - Follow the [instructions provided in section B.](#b-getting-started) to get setup with the code and data.
+
+**Readings:**
+- [Sample Selection Bias in Machine Learning for Healthcare](https://dl.acm.org/doi/pdf/10.1145/3761822)
+- (News article) [Research suggests Epic Sepsis Model is lacking in predictive power](https://www.healthcareitnews.com/news/research-suggests-epic-sepsis-model-lacking-predictive-power)
+- [A Unified Framework on Generalizability of Clinical Prediction Models](https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2022.872720/): Feel free to skim. 
+
+
+
+**Additional Readings:** Review papers on the general field of bias in healthcare data. Optional but highly encouraged. 
+- [Potential Biases in Machine Learning Algorithms Using Electronic Health Record Data](https://pmc.ncbi.nlm.nih.gov/articles/PMC6347576/)
+- [Unmasking bias in artificial intelligence: a systematic review of bias detection and mitigation strategies in electronic health record-based models](https://pubmed.ncbi.nlm.nih.gov/38520723/)
+- [Bias in medical AI: Implications for clinical decision-making](https://pmc.ncbi.nlm.nih.gov/articles/PMC11542778/)
+- [Lessons and tips for designing a machine learning study using EHR data](https://pmc.ncbi.nlm.nih.gov/articles/PMC8057454/)
+
+
+**Notebook:** 
+- Walk through the notebook `week1_explore_eicu_data.ipynb` to become familiar with the eICU dataset. 
+
+*For Assignment 1:*  Please read [Sample Selection Bias in Machine Learning for Healthcare](https://dl.acm.org/doi/pdf/10.1145/3761822) (for Part A: Read a Paper) and turn in your outputs of section *3. Section Starter: Now it's your turn!* in `week1_explore_eicu_data.ipynb` as a pdf (as this assignment's Part 2: Section Starter Task).
+
+
+### Week 2: 
+**Onboarding:** 
+- By the end of the week, you should have been granted access by PhysioNet to the full eICU dataset. Email me if you have not received an email by then. 
+
+**Additional Readings:** In conjunction with the readings for Assignment 2. 
+- [A Review of Domain Adaptation without Target Labels](https://pubmed.ncbi.nlm.nih.gov/31603771/): Feel free to skim the more "math-y" parts, but you should understand the general aim of the equations. 
+- [Selection Mechanisms and Their Consequences: Understanding and Addressing Selection Bias](https://www.researchgate.net/publication/343541124_Selection_Mechanisms_and_Their_Consequences_Understanding_and_Addressing_Selection_Bias): **Optional** overview of selection bias in causal inference, for those curious. 
+
+**Video:**
+- Watch this quick [video](https://www.youtube.com/watch?v=MvS_wYtT7Yw). 
+
+**Notebook:** 
+- Walk through and complete the notebook `proj2/week2_selection_bias.ipynb` to become familiar with how to evaluate and correct for selection bias in our dataset. Note: We will not be requiring you to submit this notebook, but strongly encourage you to go through it. 
+
+*[For Assignment 2](https://web.stanford.edu/class/cs197/assignments/project.html#related-work):* You will explore related work in this field. Please see the "nearest-neighbor" papers for this project [here](https://docs.google.com/document/d/10Qe-m0KK5pyykERt7R2zzxDdnpgx3WI7D3OtGlFqDv4/edit?usp=sharing). 
+
+*For Progress Report I:* Go through the assignments in `proj2/week2_selection_bias.ipynb`. Either submit your final output of the notebook as a pdf or write up a condensed summary of your findings from the notebook. 
+
+### Week 3: 
+
+**Readings:**
+- [Moving Beyond Medical Statistics: A Systematic Review on Missing Data Handling in Electronic Health Records
+](https://pmc.ncbi.nlm.nih.gov/articles/PMC11615160/pdf/hds.0176.pdf)
+- [Assessing Missing Data Assumptions in EHR-Based Studies: A Complex and Underappreciated Task](https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2776905)
+- [Methods for Addressing Missingness in Electronic Health Record Data for Clinical Prediction Models: Comparative Evaluation](https://pmc.ncbi.nlm.nih.gov/articles/PMC12617989/)
+
+**Notebook:** 
+- Walk through the notebook `proj2/week3_missingness.ipynb` to explore why missing data may be a concern in ML, and why simple imputation methods may not work. 
+
+
+*For Progress Report II:* Go through the assignments in `proj2/week3_missingness.ipynb`. Submit a condensed summary of your findings from the notebook for the progress report. 
+
+## Weeks 4-10: 
+In the next few weeks, you will expand upon what you have learned so far to propose a novel research project on fairness using the eICU dataset. We will provide a suggested outline for Weeks 4–10 to help you brainstorm new fairness evaluation strategies, metrics, and considerations that are particularly relevant in healthcare settings. For example, in Week 4, we will explore how missing data may itself be an important dimension of fairness that is not captured by standard metrics.
+
+While these weekly themes are meant to guide your thinking, you are not limited to them. You are also welcome to explore alternative directions, including:
+- Berkson's bias In the context of eICU data, this bias points out that we are only observing a subset of patients who are sick enough to be admitted to the ICU.
+
+
+
+### Week 4: 
+
+In this week, you will explore the limitations of reweighting methods as a solution to selection bias. As we touched on in Week 2's notebook, reweighting approaches, including density ratio estimation, aim to correct for differences between training and target distributions by assigning higher importance to certain samples. However, these methods come with challenges.
+
+One key issue is that the estimated weights can be unstable and high-variance, especially when there is limited overlap between the training and target distributions. In these cases, a small number of samples may receive very large weights. 
+
+You can explore this by visualizing the histogram of $P(S=1 | Y_i, X_i)$ for data in the training set. If there are values near 0 or 1, then the training and testing distribution lack overlap and the weights will be unstable. How does model performance change as weights become more extreme?
+
+
+Finally, consult the literature and propose at least one alternative approach to address these limitations of reweighting. This could include methods such as domain adaptation or model-based methods. 
+
+
+### Week 5: 
+
+In this week, you will investigate Berkson’s bias. Berkson’s bias arises when we condition on being in the hospital (or ICU), which can distort the relationship we want to measure (i.e., how covariates predict an outcome). For instance, patient admitted to the ICU tend to have higher disease severity, so our mortality prediction model might overinflate this risk on the non-ICU population. 
+
+
+Start by choosing a proxy for patient severity (for example, number of lab measurements, number of ICU visits within 24 hours, or length of ICU visits within 24 hours). Then:
+- Divide patients into groups based on severity (e.g., low, medium, high)
+- Train a model on one group (e.g., high-severity patients)
+- Evaluate it on another group (e.g., lower-severity patients)
+
+Compare both performance and calibration across these groups. Does the model trained on sicker patients generalize well to less severe patients? Does it systematically over- or under-predict risk?
+
+ ### Week 6: 
+In this week, you will critically examine what assumptions are reasonable when correcting for selection bias in healthcare settings. Specifically, we first consider the scenario where we train a mortality prediction model using eICU data and aim to deploy it across all hospitals in the U.S.
+
+Is this simply a case of covariate shift, or are there other types of dataset shift at play? What factors might differ between the training and deployment populations (e.g., hospital resources, patient demographics, access to care, socioeconomic status)? Are there important variables—such as income or structural determinants of health—that are not captured in the dataset but may influence outcomes?
+
+Next, think carefully about what target data we would realistically have access to at deployment time. Many methods for addressing dataset shift assume access to samples from the target distribution, or even access to both features and outcomes in that distribution. In practice, are these assumptions reasonable?
+
+Discuss with your group:
+- Where would we obtain external target data in a real healthcare setting? How might limited or partial access to the target distribution affect the methods we can use?
+- Given the solutions you've seen so far, which are reasonable in our setting? 
+- Is there a gap in what is realistic and solutions that address that setting? 
+
+### Weeks 7–8:  
+
+In these weeks, you will begin designing your own approach to addressing selection bias in healthcare data. Building on the knowledge you have observed in earlier weeks (e.g., reweighting instability, bias induced by missing data, Berkson’s bias, and types of dataset shift), your goal is to propose a method or evaluation strategy that improves how models generalize beyond the observed data.
+
+Your approach may take several forms. For example, you might:
+- Modify an existing method (e.g., reweighting, imputation, or recalibration) to make it more stable or realistic  
+- Propose a new way of defining or approximating the target population that is more realistic for our healthcare setting  
+- Introduce a strategy that explicitly accounts for missingness or partial observability for accurate prediction of some $Y$ 
+- Develop a diagnostic to detect when a model is likely to fail under selection bias  
+
+You should clearly define your proposed approach, including both its intuition and how it would be implemented. If applicable, describe any assumptions your method relies on, and how those assumptions relate to the realities of EHR data.
+
+Apply your method to your existing models and compare it to standard approaches (such as no correction, simple imputation, or reweighting). Reflect on when your method provides improvements, and when it may fail or introduce new tradeoffs (e.g., variance, instability, or reliance on untestable assumptions).
+
+These weeks are less about finding a perfect solution and more about developing and testing a principled approach to handling selection bias in a realistic healthcare setting.
+
+
+### Week 9:  
+
+In this week, you will evaluate your proposed method on the eICU dataset across one or more prediction tasks (such as mortality). Your goal is to assess whether your approach improves generalization compared to baseline methods. We recommend looking at generalization across hospital regions or hospitalsids, but you are open to explore other variables such as temporal shift. 
+
+You should:
+- Compare your method against at least one standard approach (e.g., no adjustment, imputation, reweighting)  
+- Evaluate performance across a training and testing shift (i.e., we train on eICU data from all regions but the South, and evaluate on the South eICU data). 
+
+In addition to overall performance, consider whether your method is:
+- Stable (e.g., does it rely on extreme weights or sensitive parameters?)  
+- Realistic (does it require access to data we would not have in practice?)  
+
+Reflect on whether your approach meaningfully improves selection bias, and what tradeoffs it introduces. This week should help you refine your method and prepare for your final project, where you will present and justify your approach in a real-world deployment setting.
+
