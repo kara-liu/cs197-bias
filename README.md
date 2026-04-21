@@ -85,10 +85,6 @@ If this process felt slower or more involved than expected, that’s completely 
 
 ## C. Project 1: Fair ML in healthcare
 
-In this project, we will be exploring what it means to develop "fair" machine learning models. As ML is increasingly deployed in real-world settings such as healthcare, it is more important than ever that practitioners think carefully about how these models may lead to unfair outcomes.
-
-The field of algorithmic fairness often focuses on technical definitions of fairness, that is, metrics or constraints that a model should satisfy to be deemed "fair". However, as we will see throughout this project, *fairness is not one-size-fits-all*. What it means for a model to be fair depends heavily on the context: what the model is predicting, who it affects, and how it is used in practice.
-
 
 Consider the “standard” algorithmic fairness framework as defined by three key features:
 * **A1:** Fairness is evaluated with respect to a small set of predefined sensitive attributes, typically race and sex.
@@ -109,6 +105,48 @@ The (revised) schedule for the rest of the quarter is as follows, where each wee
 * **Week 7**: How can we extend either A1, A2, or A3 to better handle or incorporate missingness? 
 * **Week 8-10**: Experiments / writing 
 
+### Weeks 1 - 2: 
+**Onboarding:** 
+
+ - Follow the [instructions provided in section B.](#b-getting-started) to get setup with the code and data.
+
+**Readings:**
+- [An Empirical Characterization of Fair Machine Learning For Clinical Risk Prediction](http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/): Please read and use for Assignment 1.
+- [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z): Review paper, feel free to skim parts that are already familiar to you. 
+
+**Additional Readings:** Review papers on the general field of bias in healthcare data. Optional but highly encouraged. 
+- [Potential Biases in Machine Learning Algorithms Using Electronic Health Record Data](https://pmc.ncbi.nlm.nih.gov/articles/PMC6347576/)
+- [Unmasking bias in artificial intelligence: a systematic review of bias detection and mitigation strategies in electronic health record-based models](https://pubmed.ncbi.nlm.nih.gov/38520723/)
+- [Bias in medical AI: Implications for clinical decision-making](https://pmc.ncbi.nlm.nih.gov/articles/PMC11542778/)
+- [Lessons and tips for designing a machine learning study using EHR data](https://pmc.ncbi.nlm.nih.gov/articles/PMC8057454/)
+
+**Notebook:** 
+- Walk through the notebook `week1_explore_eicu_data.ipynb` to become familiar with the eICU dataset. 
+
+*For Assignment 1 (Due April 12):*  Please read [An Empirical Characterization...]((http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/)) (for Part A: Read a Paper) and turn in your outputs of section *3. Section Starter: Now it's your turn!* in `week1_explore_eicu_data.ipynb` as a pdf (as this assignment's Part 2: Section Starter Task).
+
+*For Progress Report 1 (Due April 12):* Meet with your project group and submit what you all want to accomplish for Week 3. [See the website](https://web.stanford.edu/class/cs197/assignments/project.html#progress-reports) for how we expect project reports to be structured.
+
+### Week 3: 
+**Onboarding:** 
+- By Wednesday, you should have been granted access by PhysioNet to the full eICU dataset. Email me if you have not received an email by then. 
+- You will need to generate and save the full dataset using the notebook from Week 2. 
+
+**Additional Readings:** In conjunction with the readings for Assignment 2. 
+
+- [Dissecting racial bias in an algorithm used to manage the health of populations](https://www.science.org/doi/10.1126/science.aax2342)
+- [Ensuring Fairness in Machine Learning to Advance Health Equity](https://www.acpjournals.org/doi/epdf/10.7326/M18-1990)
+- [Algorithmic fairness in computational medicine](https://pmc.ncbi.nlm.nih.gov/articles/PMC9463525/)
+
+**Video:**
+- Watch [this video](https://www.youtube.com/watch?v=MzuoWAk9_AQ) from 21:00 to 1:21:00
+
+**Notebook:** 
+- Walk through and complete the notebook `proj1/week2_fairness_evaluation.ipynb` to become familiar with algorithmic fairness calculations.
+
+*[For Assignment 2](https://web.stanford.edu/class/cs197/assignments/project.html#related-work) (Due April 16):* You will explore related work in this field. Please see the "nearest-neighbor" papers for this project [here](https://docs.google.com/document/d/10Qe-m0KK5pyykERt7R2zzxDdnpgx3WI7D3OtGlFqDv4/edit?usp=sharing). 
+
+*For Progress Report 2 (Due April 19):* Meet with your project group and submit what you all want to accomplish for Week 4. [See the website](https://web.stanford.edu/class/cs197/assignments/project.html#progress-reports) for how we expect project reports to be structured.
 
 
 ### Week 4 (April 20 - 26): Is missingness informative?
@@ -120,39 +158,53 @@ Is missingness random, or informative, in the eICU dataset?
 - [Fairness in Missing Data Imputation](https://arxiv.org/pdf/2110.12002) - read in-depth
 - [Exploring the Inequitable Impact of Data Missingness on Fairness in Machine Learning](https://ieeexplore.ieee.org/document/10920480) - skim
 - [Adapting Fairness Interventions to Missing Values](https://arxiv.org/pdf/2305.19429) - skim
-
+- [Missing data and multiple imputation in clinical epidemiological research](https://pmc.ncbi.nlm.nih.gov/articles/PMC5358992/) - skim
 **Tasks**: 
 
 (Note: The `week3_fairness_tradeoffs.ipynb` notebook is now entirely optional / not required.)
 
-1. Examine the distribution of missing features (per feature and per patient). Compute summary statistics (e.g., fraction missing per patient, per feature).
-2. Analyze how missingness varies across: sex, ethnicity, age, hospital characteristics (e.g., hospitalid, region, bed count). Do certain groups systematically have more or less complete data? Use a statistical test to make a concrete determination. 
-3. Construct a "missingness phenotype". For example, you can define patient groups based on if they have low / medium / high rates of feature missingness, you can cluster using KNN based on binary missingness masks. Visualize and interpret these groups.
-4. Train a classifier model using only missingness indicators (binary features) to predict mortality. Use interpretability tools (i.e., coefficients (for linear models), or SHAP values (for tree-based models)). 
-Identify which missing features are most predictive and assess whether this experiment aligns with clinical intuition.
-5. Based on your findings, argue if missingness is random (uninformative), or structured (reflecting clinical processes, access, or data collection differences). Relate this to MAR, MCAR, and MNAR. 
-6. Discuss how missingness may impact fairness evaluation. 
+1. Examine the distribution of missing features (missingness frequency per feature and per patient, and then an overall histogram of missingness frequency across all features and all patients). Plot using seaborn to visualize your findings. 
+2. Analyze how missingness varies across: sex, ethnicity, age, hospital characteristics (e.g., hospitalid, region, bed count). Do certain groups systematically have more or less complete data? Use a statistical test (i.e., two-sampled KS test, see [here](https://pmc.ncbi.nlm.nih.gov/articles/PMC8327789/) if you are unfamiliar with statistical tests) and plot using seaborn to determine the answer. Furthermore, do missing values correlate across the features themselves? 
+3. Construct a "missingness attribute". For example, you can define patient groups based on if they have low / medium / high rates of feature missingness, you can cluster using KNN based on binary missingness masks. Visualize and interpret these groups.
+4. Train a classifier model using only missingness indicators (binary features) to predict mortality. Use interpretability tools (i.e., coefficients (for linear classifiers), or SHAP values (for tree-based including XGB classifiers)). Identify which missing features are most predictive and see if this makes sense given the task at hand.
+5. Based on your findings, argue if missingness is random (uninformative), or structured (reflecting clinical processes, access, or data collection differences). Relate this to MAR, MCAR, and MNAR (you should have learned about these in your assigned readings!). 
+6. Thoroughly discuss how missingness may impact (good or bad) the "standard" fairness evaluation framework.  
 
 **Deliverables:**
-* Progress Report 3 (Due April 26) - a PDF or notebook of all the completed tasks above 
-* Introduction (Due April 23) - see website; this should be focused on this missingness project 
+* Progress Report 3 (Due April 26) - a minimum 2-page writeup plus a notebook of all the completed tasks above. As a reminder: $\checkmark+$ = 100% indicates you went above and beyond; $\checkmark$ = 95% indicates basic completeness. 
+* Introduction (Due April 23) - see website.
 
 ### Week 5 (April 27 - May 3): Can missingness be a sensitive attribute?
 
 **Goal**:
-Can missingness itself be treated as a “sensitive attribute” for evaluating fairness, as an alternative or complement to race and sex?
+Can missingness itself be treated as a "sensitive attribute" for evaluating fairness, as an alternative or complement to race and sex?
 
 **Tasks**: 
-1. Decide on a way to categorize missingness levels (i.e., using your "phenotype" from Week 4). For a classifier trained to predict mortality, pick one imputaiton strategy (we will analyze this strategy further next week), and analyze the "standard" four metrics of fairness (see A2 above) using the following 3 sensitive attributes: (1) missingness category, (2) race, and (3) sex. Which missingness group perform the best and the worst? How does this performance compare to the best / worst groups defined by race and sex? 
+1. Decide on a way to categorize missingness levels (i.e., using your "missingness attribute" from Week 4). For a classifier trained to predict mortality, pick one imputaiton strategy (we will analyze this strategy further next week), and analyze the "standard" four metrics of fairness (see A2 above) using the following 3 sensitive attributes: (1) missingness category, (2) race, and (3) sex. Which missingness group perform the best and the worst? How does this performance compare to the best / worst groups defined by race and sex? 
 2. Construct intersectional subgroups: e.g., (race × missingness level), (sex × missingness level), (sex x race x missingness level). Evaluate fairness performance across these groups, and report the bootstrapped variance of these fairness metrics (so we can see how small sample size affects the consistency of fairness metrics). Summarize your findings. 
-3. Repeat these experiments where we look at a different "missingness phenotype" based on a different set of feature missingness. For example, if your original category was based on missingness of ALL variables, evaluate over a new cateogry of missingness of JUST lab variables. 
+3. Repeat these experiments where we look at a different "missingness attribute" based on a different set of feature missingness. For example, if your original category was based on missingness of ALL variables, evaluate over a new cateogry of missingness of JUST lab variables. 
 4. Reflect: Should missingness be considered a fairness-relevant attribute? Why or why not? 
 
 **Deliverables:**
-* Progress Report 4 (Due May 3) - a PDF or notebook of all the completed tasks above 
+* Progress Report 4 (Due May 3) - a minimum 2-page writeup plus a notebook of all the completed tasks above 
 * (Optional) Related Works - based on this project direction, refine your current related works section to focus in on algorihtmic fairness specifically with respect to missing data. You will need to do this eventually, so might be a good idea to work on that this week. 
 
-### Week 6 (May 4 - 10): Does imputation affect fairness evaluations?
+### Week 6 (May 4 - 10): Does missing data handling affect fairness evaluations?
+
+**Goal**:
+Do different missing data handling strategies lead to different fairness conclusions?  
+
+**Tasks**:
+1. Define a fairness evaluation protocol (i.e., fix a model, split, and evaluation metrics). 
+2. Implement at least three strategies for handling missing data, such as (a) complete-case analysis - dropping all patients who have feature/s X missing, (b) simple imputation (mean/median), (c) using missingness indicators, (d) MICE or other advanced method. For each, track dataset size (how many patients remain), and track feature distributions (before vs after).
+3. Measure fairness using the four standard metrics across all group definitions (i.e., race, sex, age, missingness attribute, and intersecitonal groups). Compare how the different strategies for handling missing data affect the fairness results. 
+4. Introduce mild synthetic missingness (e.g., drop 10–20% of values randomly = MCAR or based on some attribute = MAR). Re-run preprocessing pipeline and train on this synthetically missing data, but when you evaluate, evaluate on the original dataset without the 10-20% dropped. Check whether fairness conclusions remain stable.
+5. Reflect on how missing data preprocessing affected the fairness conclusions.  
+
+**Deliverables:**
+* Progress Report 5 (Due May 10) - a minimum 2-page writeup plus a notebook of all the completed tasks above 
+
+
 ### Week 7 (May 11 - 17): TBD
 ### Week 8 (May 18 - 24): TBD
 ### Week 9 (May 25 - 31): TBD
