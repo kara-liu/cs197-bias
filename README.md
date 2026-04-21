@@ -229,7 +229,7 @@ With respect to **Q2**, we may propose to extend Group DRO by incorporating a no
 
 One idea is as follows: Define proxy variables for the selection mechanism, such as missing data patterns, hospital / site, simple covariates (e.g., age, severity proxies). Then define groups based on these variables (e.g., clusters or bins). Next, we can estimate a **selection-risk score** $s_g$ for each group: e.g., using a classifier to distinguish training vs. target environments, or using distance / support-based measures. Finally, we can train a model that prioritizes high-risk groups:
 $$
-\min_\theta \max_g \; s_g \cdot E[\ell(f_\theta(x), y) \mid g]
+\min_\theta \max_g \; s_g \cdot \mathbb{E}[\ell(f_\theta(x), y) \mid g]
 $$
 
 where $s_g$ captures how poorly group \(g\) is represented under selection.
@@ -307,17 +307,12 @@ How does model performance degrade under cross-hospital distribution shift, and 
 - [Targeted Validation: Validating Clinical Prediction Models in Their Intended Population and Setting](https://diagnprognres.biomedcentral.com/articles/10.1186/s41512-022-00136-8) - skim  
 
 **Tasks:**  
+1. Investigate what may be causing selection bias / distribution shift across hospitals. This will help us later when picking the variables to model the "seleciton risk" function. Compare patient and feature distributions across hospitals, including:  demographics (e.g., age, sex, ethnicity), outcome prevalence, hospital characteristics, missingness summaries. Use statistical tests (KS tests) or visualizations to assess whether hospitals differ meaningfully. Briefly interpret what kinds of selection mechanisms might explain these differences.
+2. Train a baseline mortality prediction model using standard ERM (which is standard training; ERM = empirical risk minimiazation) on one subset of hospitals and evaluate it on held-out hospitals. Compare performance (AUROC, AUPRC, or even fairness metrics if you want) across internal validation, external hospital, and worst-hospital performance. Plot these results clearly using seaborn. Repeat this whole process at least 5 times to get a sense of generalization trends. 
+2. Train Group DRO models using at least two different choices of groups: for example, demographic groups (e.g., sex, ethnicity, or sex × ethnicity) , or hospital ids. 
+3. Compare to ERM from 1. Does standard Group DRO improve: worst-hospital performance? average external hospital performance? Plot these results clearly using seaborn. 
+4. Reflect: does group DRO help? 
 
-1. Train a baseline mortality prediction model using standard ERM (which is standard training; ERM = empirical risk minimiazation) on one subset of hospital/s and evaluate it on held-out hospitals. Compare performance (AUROC, AUPRC, or even fairness metrics if you want) across internal validation, external hospital, and worst-hospital performance. Plot these results clearly using seaborn. Repeat this whole process at least 5 times to get a sense of generalization trends. 
-
-2. Identify evidence of selection bias / distribution shift across hospitals.**  
-   Compare patient and feature distributions across hospitals, including:
-   - demographics (e.g., age, sex, ethnicity)  
-   - outcome prevalence  
-   - hospital characteristics  
-   - missingness summaries  
-   
-   Use statistical tests or visualizations to assess whether hospitals differ meaningfully. Briefly interpret what kinds of selection mechanisms might explain these differences.
 
 <!-- 3. **Test whether standard group definitions capture worst-case failure.**  
    Evaluate baseline model performance across:
