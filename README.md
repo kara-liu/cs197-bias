@@ -301,53 +301,60 @@ How does model performance degrade under cross-hospital distribution shift, and 
 
 **Readings:**
 - [Distributionally Robust Neural Networks for Group Shifts](https://arxiv.org/abs/1911.08731) - read in-depth  
-- [The Impact of Multi-Institution Datasets on the Generalizability of Machine Learning Prediction Models in the ICU](https://journals.lww.com/ccmjournal/fulltext/2024/11000/the_impact_of_multi_institution_datasets_on_the.4.aspx) - read in-depth  
-- [In Search of Lost Domain Generalization](https://arxiv.org/abs/2007.01434) - skim  
-- [Generalization in Clinical Prediction Models: The Blessing and Curse of Measurement Indicator Variables](https://journals.lww.com/ccejournal/fulltext/2021/08000/generalization_in_clinical_prediction_models__the.5.aspx) - skim  
-- [Targeted Validation: Validating Clinical Prediction Models in Their Intended Population and Setting](https://diagnprognres.biomedcentral.com/articles/10.1186/s41512-022-00136-8) - skim  
+- [The Impact of Multi-Institution Datasets on the Generalizability of Machine Learning Prediction Models in the ICU](https://pmc.ncbi.nlm.nih.gov/articles/PMC11469625/pdf/ccm-52-1710.pdf) - read in-depth  
+- [A comparison of approaches to improve worst-case predictive model performance over patient subpopulations](https://www.nature.com/articles/s41598-022-07167-7) - skim
+- [Benchmarking Distribution Shift in Tabular Data
+with TableShift](https://proceedings.neurips.cc/paper_files/paper/2023/file/a76a757ed479a1e6a5f8134bea492f83-Paper-Datasets_and_Benchmarks.pdf) - skim 
+- [Distributionally Robust Optimization with Probabilistic Group](https://www.semanticscholar.org/paper/Distributionally-Robust-Optimization-with-Group-Ghosal-Li/14de7ffbbc1ce1afd75f32e43787b92a0165a5a7) - skim
+
 
 **Tasks:**  
-1. Investigate what may be causing selection bias / distribution shift across hospitals. This will help us later when picking the variables to model the "seleciton risk" function. Compare patient and feature distributions across hospitals, including:  demographics (e.g., age, sex, ethnicity), outcome prevalence, hospital characteristics, missingness summaries. Use statistical tests (KS tests) or visualizations to assess whether hospitals differ meaningfully. Briefly interpret what kinds of selection mechanisms might explain these differences.
-2. Train a baseline mortality prediction model using standard ERM (which is standard training; ERM = empirical risk minimiazation) on one subset of hospitals and evaluate it on held-out hospitals. Compare performance (AUROC, AUPRC, or even fairness metrics if you want) across internal validation, external hospital, and worst-hospital performance. Plot these results clearly using seaborn. Repeat this whole process at least 5 times to get a sense of generalization trends. 
-2. Train Group DRO models using at least two different choices of groups: for example, demographic groups (e.g., sex, ethnicity, or sex × ethnicity) , or hospital ids. 
-3. Compare to ERM from 1. Does standard Group DRO improve: worst-hospital performance? average external hospital performance? Plot these results clearly using seaborn. 
-4. Reflect: does group DRO help? 
+
+1. **Diagnose selection bias / distribution shift across hospitals.**  
+   Investigate how patient populations and data collection differ across hospitals. Compare distributions of:
+   - demographics (e.g., age, sex, ethnicity)  
+   - outcome prevalence (e.g., mortality rate)  
+   - hospital characteristics (if available)  
+   - missingness summaries (e.g., fraction of missing features)  
+
+   Use statistical tests (e.g., KS tests) and visualizations (seaborn plots) to assess whether hospitals differ meaningfully.  
+   Briefly interpret your findings: what kinds of **selection mechanisms** (e.g., differences in patient populations, measurement practices, or healthcare access) might explain these differences?
 
 
-<!-- 3. **Test whether standard group definitions capture worst-case failure.**  
-   Evaluate baseline model performance across:
-   - sex  
-   - ethnicity  
-   - sex × ethnicity  
-   
-   Then compare these disparities to cross-hospital disparities. Are the largest failures captured by standard demographic groups, or are hospital-level failures larger?
+2. **Measure baseline generalization (ERM).**  
+   Train a mortality prediction model using standard ERM (empirical risk minimization) on a subset of hospitals and evaluate it on held-out hospitals.
 
-4. **Implement standard Group DRO under different group definitions.**  
-   Train Group DRO models using at least two different choices of groups:
+   Compare:
+   - internal validation performance  
+   - external (held-out hospital) performance  
+   - worst-hospital performance  
+
+   Use metrics that are common in existing works such as AUROC, AUPRC, and optionally fairness metrics.  
+   Plot results clearly using seaborn.
+
+   Repeat this process **at least 5 times** (with different hospital train-heldout splits) to assess variability and generalization trends.
+
+
+3. **Evaluate standard Group DRO.**  
+   Train Group DRO models using at least two different group definitions, for example:
    - demographic groups (e.g., sex, ethnicity, or sex × ethnicity)  
    - hospital groups  
-   
-   Compare them to ERM. Does standard Group DRO improve:
-   - worst-group training performance?  
-   - worst-group test performance?  
-   - held-out hospital generalization?  
 
-5. **Evaluate alternative proxy group definitions.**  
-   Define at least one alternative grouping intended to better reflect the selection mechanism, such as:
-   - missingness level (low / medium / high)  
-   - hospital × missingness groups  
-   - clusters based on missingness + simple covariates  
-   
-   Evaluate whether these proxy groups reveal larger or more meaningful failures than race / sex alone.
 
-6. **Interpret what standard Group DRO is and is not solving.**  
-   Based on your experiments, discuss:
-   - whether Group DRO helps with cross-hospital generalization  
-   - whether the worst deployment environment seems to be captured by observed groups in training  
-   - whether hospital generalization appears to be more a problem of **selection bias / unseen environments** than simple imbalance across known groups  
+4. **Compare Group DRO to ERM.**  
+   Compare ERM and Group DRO in terms of:
+   - worst-hospital performance  
+   - average external hospital performance  
 
-   Your write-up should end with a clear answer to the week’s central question:  
-   **Is standard Group DRO enough for cross-site generalization, or do we need a more selection-aware notion of groups?** -->
+   Plot results clearly using seaborn.  
+   Does Group DRO improve robustness to cross-hospital distribution shift? How does this comapre with the findings of the related works above? 
+
+
+5. **Reflection.**  
+   Based on your results, answer:
+   - Does standard Group DRO improve generalization across hospitals?  
+   - Are the largest failures captured by the groups you defined?  
+   - Do you see any particular areas in which Group DRO could be improved upon? 
 
 **Deliverables:**
 * Progress Report 3 (Due April 26) - a minimum 2-page writeup plus a notebook of all the completed tasks above. As a reminder: $\checkmark+$ = 100% indicates you went above and beyond; $\checkmark$ = 95% indicates basic completeness. 
