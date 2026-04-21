@@ -23,7 +23,7 @@ This 10-week project is divided into two phases:
 The projects are as follows, with the hyperlinks attached:
 
 - [Project 1: Fair ML in healthcare](#c-project-1-fair-ml-in-healthcare)
-- [Project 2: Exploring selection and missing data biases](#d-project-2-exploring-selection-and-missing-data-biases)
+- [Project 2: Improving selection bias with group DRO](#d-project-2-improving-selection-bias-with-group-dro)
 
 ## B. Getting started 
 
@@ -212,36 +212,37 @@ Do different missing data handling strategies lead to different fairness conclus
 ### Week 9 (May 25 - 31): TBD
 ### Week 10 (June 1 - 7): TBD
 
-## D. Project 2: Exploring selection and missing data biases
+## D. Project 2: Improving Selection Bias with Group DRO
 
+In this project, we will explore how to handle **selection bias** in real-world data, with a focus on **cross-hospital generalizability**. Selection bias arises when the data we observe is not a random sample of the population we care about $^{[1]}$. 
 
-In this project, we will explore different aspects of selection bias in real-world data and how selection bias affects the generalization of ML models. Selection bias arises when the data we observe is not a random sample of the population we care about $^{[1]}$. For example, we may want to predict mortality risk across all adults in the U.S.. However, EHR data (as in our eICU case) typically only includes patients from certain geographical regions and oversamples for people who frequently interact with the healthcare system. As a result, the data available to us may not be representative of the target population, which can lead to models that do not generalize well.
+For example, we may want to predict mortality risk across many hospitals in the U.S., but in practice we only have access to EHR data (e.g., eICU) from a subset of hospitals and patient populations. These datasets are often affected by *selection bias*, in that they are non-random subsets of the general population. For example, patients who interact more frequently with the healthcare system are more likely to be observed, and measurement practices differ across hospitals. As a result, the training data may not be representative of the target population, leading to models that fail to generalize to new clinical environments.
 
+A common approach to improving robustness is **Group DRO**, which optimizes worst-case performance over predefined groups (e.g., race, sex, or hospital). However, standard Group DRO assumes that the relevant sources of distribution shift are fully captured by these observed groups. In settings with selection bias, this assumption may fail: the worst-case test environment may not correspond to any observed group in the training data.
 
-Project Goal: In this project, you will investigate how different forms of selection bias affect ML prediction models trained on the eICU dataset, with the goal of proposing a strategy to mitigate these biases. We will consider several types of bias, including temporal bias, bias due to missing data, and geographic bias. During Weeks 1–4, you will explore ways to detect and reason about selection bias, and examine how it impacts model performance. During Weeks 5–10, you will focus on developing and evaluating methods to address these biases. We provide a more thorough description for developing your project under Weeks 7-8; please refer to this section often to guide your experiments in Weeks 1-6. 
+The key question this project seeks to answer is: *How can we improve Group DRO-style robustness methods to better account for selection bias and generalization to new (hospital) environments?* We can further break down this project can be broken down into several guiding questions: 
 
+* **Q1:** Does standard Group DRO improve generalization for cross-site (hospital) settings? (this would motivate the "bit-flip")
+* **Q2:** How can we improve Group DRO to perform better on new hospital environments? Can we extend Group DRO by defining better groups or objective functions based on selection risk? 
+
+With respect to **Q2**, we may propose to extend Group DRO by incorporating a notion of *selection risk*. You have learned roughly that selection bias is a common source of dataset shift whereby a **selection mechanism** essentially "samples" if a patient will be included in a dataset or not (i.e., imagine a function for Stanford Hospital data that will more likely accept patients sampled from the general U.S. population if they live in the Bay Area, etc.) If we can approximate this selection risk, then we might be able to build a better DRO method. 
+
+One idea is as follows: Define proxy variables for the selection mechanism, such as missing data patterns, hospital / site, simple covariates (e.g., age, severity proxies). Then define groups based on these variables (e.g., clusters or bins). Next, we can estimate a **selection-risk score** $s_g$ for each group: e.g., using a classifier to distinguish training vs. target environments, or using distance / support-based measures. Finally, we can train a model that prioritizes high-risk groups:
+$$
+\min_\theta \max_g \; s_g \cdot E[\ell(f_\theta(x), y) \mid g]
+$$
+
+where $s_g$ captures how poorly group \(g\) is represented under selection.
+
+* **Week 4:** How does model performance change across hospitals? What evidence is there of selection bias? And does regular group DRO help / hinder this performance?
+* **Week 5:** Can we construct better groupings using proxy selection variables or selection risk scores? 
+* **Week 6:** TODO
+* **Week 7:** TODO
+* **Week 8-10:** TODO
+
+---
 $^{[1]}$: Many different fields have names for this phenomenon. It may also be called *distribution shift*, *data shift*, *dataset bias*, *sample* selection bias, and in some cases, *covariate shift*. In ML, you might see that the field of domain adaptation is relevant for selection bias. The term *selection bias* I am using has its origins in the field of causal inference.
 
-
-
-<!-- Consider the “standard” algorithmic fairness framework as defined by three key features:
-* **A1:** Fairness is evaluated with respect to a small set of predefined sensitive attributes, typically race and sex.
-* **A2:** Fairness is measured using a fixed set of standard metrics, such as demographic parity, equal opportunity, equalized odds, and calibration.
-* **A3:** Missing data is treated as a preprocessing issue to be handled before evaluating mordel performance - typically, either by complete-case analysis (dropping patients with missing data) or by imputation. 
-
-The research project for the remainder of the quarter is: *How can we improve this standard framework to better account for the information and structure contained in missingness?* Rather than treating missing data as something to "fix", this project investigates whether missingness itself reveals important patterns useable for constructing a better algorithmic fairness framework. 
-
-This project can be broken down into several guiding questions:
-* **Q1:** How informative is missingness in the eICU dataset?
-* **Q2:** Where (and how) does the standard fairness framework break under missingness?
-* **Q3:** Can we extend the fairness framework to incorporate missingness?
-
-The (revised) schedule for the rest of the quarter is as follows, where each weeks is framed by the central questions your group will try to answer that week: 
-* **Week 4**: Is missingness random, or informative, in the eICU dataset? 
-* **Week 5**: Can missingness itself be a "sensitive attribute" to evaluate fairness over (an alternative to race / sex from A1)?
-* **Week 6**: How do different missing data handling strategies (A3) affect fairness metrics?  
-* **Week 7**: How can we extend either A1, A2, or A3 to better handle or incorporate missingness? 
-* **Week 8-10**: Experiments / writing  -->
 
 
 ### Weeks 1-2: 
@@ -291,17 +292,67 @@ The (revised) schedule for the rest of the quarter is as follows, where each wee
 
 
 
-### Week 4 (April 20 - 26): 
+### Week 4 (April 20 - 26): Does standard Group DRO improve cross-hospital generalization?
 
 (Note: The `week3_missingness.ipynb` notebook is now entirely optional / not required.)
 
-**Goal:**
+**Goal:**  
+How does model performance degrade under cross-hospital distribution shift, and does standard Group DRO help? 
 
 **Readings:**
+- [Distributionally Robust Neural Networks for Group Shifts](https://arxiv.org/abs/1911.08731) - read in-depth  
+- [The Impact of Multi-Institution Datasets on the Generalizability of Machine Learning Prediction Models in the ICU](https://journals.lww.com/ccmjournal/fulltext/2024/11000/the_impact_of_multi_institution_datasets_on_the.4.aspx) - read in-depth  
+- [In Search of Lost Domain Generalization](https://arxiv.org/abs/2007.01434) - skim  
+- [Generalization in Clinical Prediction Models: The Blessing and Curse of Measurement Indicator Variables](https://journals.lww.com/ccejournal/fulltext/2021/08000/generalization_in_clinical_prediction_models__the.5.aspx) - skim  
+- [Targeted Validation: Validating Clinical Prediction Models in Their Intended Population and Setting](https://diagnprognres.biomedcentral.com/articles/10.1186/s41512-022-00136-8) - skim  
 
+**Tasks:**  
 
-**Tasks**: 
+1. Train a baseline mortality prediction model using standard ERM (which is standard training; ERM = empirical risk minimiazation) on one subset of hospital/s and evaluate it on held-out hospitals. Compare performance (AUROC, AUPRC, or even fairness metrics if you want) across internal validation, external hospital, and worst-hospital performance. Plot these results clearly using seaborn. Repeat this whole process at least 5 times to get a sense of generalization trends. 
 
+2. Identify evidence of selection bias / distribution shift across hospitals.**  
+   Compare patient and feature distributions across hospitals, including:
+   - demographics (e.g., age, sex, ethnicity)  
+   - outcome prevalence  
+   - hospital characteristics  
+   - missingness summaries  
+   
+   Use statistical tests or visualizations to assess whether hospitals differ meaningfully. Briefly interpret what kinds of selection mechanisms might explain these differences.
+
+<!-- 3. **Test whether standard group definitions capture worst-case failure.**  
+   Evaluate baseline model performance across:
+   - sex  
+   - ethnicity  
+   - sex × ethnicity  
+   
+   Then compare these disparities to cross-hospital disparities. Are the largest failures captured by standard demographic groups, or are hospital-level failures larger?
+
+4. **Implement standard Group DRO under different group definitions.**  
+   Train Group DRO models using at least two different choices of groups:
+   - demographic groups (e.g., sex, ethnicity, or sex × ethnicity)  
+   - hospital groups  
+   
+   Compare them to ERM. Does standard Group DRO improve:
+   - worst-group training performance?  
+   - worst-group test performance?  
+   - held-out hospital generalization?  
+
+5. **Evaluate alternative proxy group definitions.**  
+   Define at least one alternative grouping intended to better reflect the selection mechanism, such as:
+   - missingness level (low / medium / high)  
+   - hospital × missingness groups  
+   - clusters based on missingness + simple covariates  
+   
+   Evaluate whether these proxy groups reveal larger or more meaningful failures than race / sex alone.
+
+6. **Interpret what standard Group DRO is and is not solving.**  
+   Based on your experiments, discuss:
+   - whether Group DRO helps with cross-hospital generalization  
+   - whether the worst deployment environment seems to be captured by observed groups in training  
+   - whether hospital generalization appears to be more a problem of **selection bias / unseen environments** than simple imbalance across known groups  
+
+   Your write-up should end with a clear answer to the week’s central question:  
+   **Is standard Group DRO enough for cross-site generalization, or do we need a more selection-aware notion of groups?** -->
 
 **Deliverables:**
 * Progress Report 3 (Due April 26) - a minimum 2-page writeup plus a notebook of all the completed tasks above. As a reminder: $\checkmark+$ = 100% indicates you went above and beyond; $\checkmark$ = 95% indicates basic completeness. 
