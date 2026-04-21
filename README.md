@@ -89,131 +89,74 @@ In this project, we will be exploring what it means to develop "fair" machine le
 
 The field of algorithmic fairness often focuses on technical definitions of fairness, that is, metrics or constraints that a model should satisfy to be deemed "fair". However, as we will see throughout this project, *fairness is not one-size-fits-all*. What it means for a model to be fair depends heavily on the context: what the model is predicting, who it affects, and how it is used in practice.
 
-Project Goal: In this project, you will examine ML prediction models on the eICU dataset and consider how a "fair" model should be defined and evaluated in each healthcare-inspired setting. Although you will first assess your models using existing fairness metrics (such as demographic parity), your group should explore or propose new metrics as part of your research contribution, either heavily inspired by existing literature or of your own design. During weeks 5 - 10, you will build toward a novel fairness contribution by following a set of suggested experiments to brainstorm new evaluation strategies, metrics, and considerations that are especially relevant in healthcare. These themes are meant to guide your thinking towards a new fairness evaluation metric, but your group may also propose new interventions to train or adjust models in order to improve fairness.
 
-We provide a more thorough description of developing your project under Weeks 7-8; please refer to this section often to guide your experiments in Weeks 1-6. 
+Consider the “standard” algorithmic fairness framework as defined by three key features:
+* **A1:** Fairness is evaluated with respect to a small set of predefined sensitive attributes, typically race and sex.
+* **A2:** Fairness is measured using a fixed set of standard metrics, such as demographic parity, equal opportunity, equalized odds, and calibration.
+* **A3:** Missing data is treated as a preprocessing issue to be handled before evaluating mordel performance - typically, either by complete-case analysis (dropping patients with missing data) or by imputation. 
 
-### Weeks 1 - 2: 
-**Onboarding:** 
+The research project for the remainder of the quarter is: *How can we improve this standard framework to better account for the information and structure contained in missingness?* Rather than treating missing data as something to "fix", this project investigates whether missingness itself reveals important patterns useable for constructing a better algorithmic fairness framework. 
 
- - Follow the [instructions provided in section B.](#b-getting-started) to get setup with the code and data.
+This project can be broken down into several guiding questions:
+* **Q1:** How informative is missingness in the eICU dataset?
+* **Q2:** Where (and how) does the standard fairness framework break under missingness?
+* **Q3:** Can we extend the fairness framework to incorporate missingness?
 
-**Readings:**
-- [An Empirical Characterization of Fair Machine Learning For Clinical Risk Prediction](http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/): Please read and use for Assignment 1.
-- [A brief review on algorithmic fairness](https://link.springer.com/article/10.1007/s44176-022-00006-z): Review paper, feel free to skim parts that are already familiar to you. 
-
-**Additional Readings:** Review papers on the general field of bias in healthcare data. Optional but highly encouraged. 
-- [Potential Biases in Machine Learning Algorithms Using Electronic Health Record Data](https://pmc.ncbi.nlm.nih.gov/articles/PMC6347576/)
-- [Unmasking bias in artificial intelligence: a systematic review of bias detection and mitigation strategies in electronic health record-based models](https://pubmed.ncbi.nlm.nih.gov/38520723/)
-- [Bias in medical AI: Implications for clinical decision-making](https://pmc.ncbi.nlm.nih.gov/articles/PMC11542778/)
-- [Lessons and tips for designing a machine learning study using EHR data](https://pmc.ncbi.nlm.nih.gov/articles/PMC8057454/)
-
-**Notebook:** 
-- Walk through the notebook `week1_explore_eicu_data.ipynb` to become familiar with the eICU dataset. 
-
-*For Assignment 1 (Due April 12):*  Please read [An Empirical Characterization...]((http:/s/pmc.ncbi.nlm.nih.gov/articles/PMC7871979/)) (for Part A: Read a Paper) and turn in your outputs of section *3. Section Starter: Now it's your turn!* in `week1_explore_eicu_data.ipynb` as a pdf (as this assignment's Part 2: Section Starter Task).
-
-*For Progress Report 1 (Due April 12):* Meet with your project group and submit what you all want to accomplish for Week 3. [See the website](https://web.stanford.edu/class/cs197/assignments/project.html#progress-reports) for how we expect project reports to be structured.
-
-### Week 3: 
-**Onboarding:** 
-- By Wednesday, you should have been granted access by PhysioNet to the full eICU dataset. Email me if you have not received an email by then. 
-- You will need to generate and save the full dataset using the notebook from Week 2. 
-
-**Additional Readings:** In conjunction with the readings for Assignment 2. 
-
-- [Dissecting racial bias in an algorithm used to manage the health of populations](https://www.science.org/doi/10.1126/science.aax2342)
-- [Ensuring Fairness in Machine Learning to Advance Health Equity](https://www.acpjournals.org/doi/epdf/10.7326/M18-1990)
-- [Algorithmic fairness in computational medicine](https://pmc.ncbi.nlm.nih.gov/articles/PMC9463525/)
-
-**Video:**
-- Watch [this video](https://www.youtube.com/watch?v=MzuoWAk9_AQ) from 21:00 to 1:21:00
-
-**Notebook:** 
-- Walk through and complete the notebook `proj1/week2_fairness_evaluation.ipynb` to become familiar with algorithmic fairness calculations.
-
-*[For Assignment 2](https://web.stanford.edu/class/cs197/assignments/project.html#related-work) (Due April 16):* You will explore related work in this field. Please see the "nearest-neighbor" papers for this project [here](https://docs.google.com/document/d/10Qe-m0KK5pyykERt7R2zzxDdnpgx3WI7D3OtGlFqDv4/edit?usp=sharing). 
-
-*For Progress Report 2 (Due April 19):* Meet with your project group and submit what you all want to accomplish for Week 4. [See the website](https://web.stanford.edu/class/cs197/assignments/project.html#progress-reports) for how we expect project reports to be structured.
+The (revised) schedule for the rest of the quarter is as follows, where each weeks is framed by the central questions your group will try to answer that week: 
+* **Week 4**: Is missingness random, or informative, in the eICU dataset? 
+* **Week 5**: Can missingness itself be a "sensitive attribute" to evaluate fairness over (an alternative to race / sex from A1)?
+* **Week 6**: How do different missing data handling strategies (A3) affect fairness metrics?  
+* **Week 7**: How can we extend either A1, A2, or A3 to better handle or incorporate missingness? 
+* **Week 8-10**: Experiments / writing 
 
 
-### Week 4: 
+
+### Week 4 (April 20 - 26): Is missingness informative?
+**Goal:**
+Is missingness random, or informative, in the eICU dataset?
 
 **Readings:**
-- [Evaluating and mitigating bias in machine learning models for cardiovascular disease prediction](https://www.sciencedirect.com/science/article/pii/S1532046423000151?via%3Dihub)
-- [The accuracy, fairness, and limits of predicting recidivism](https://www.science.org/doi/10.1126/sciadv.aao5580): If you've heard of the famous COMPAS fairness example, this is the original paper.  
+- [Imputation Strategies Under Clinical Presence: Impact on Algorithmic Fairness](https://proceedings.mlr.press/v193/jeanselme22a/jeanselme22a.pdf) - read in-depth
+- [Fairness in Missing Data Imputation](https://arxiv.org/pdf/2110.12002) - read in-depth
+- [Exploring the Inequitable Impact of Data Missingness on Fairness in Machine Learning](https://ieeexplore.ieee.org/document/10920480) - skim
+- [Adapting Fairness Interventions to Missing Values](https://arxiv.org/pdf/2305.19429) - skim
 
+**Tasks**: 
 
-**Notebook:** 
-- Walk through the notebook `proj1/week3_fairness_tradeoffs.ipynb` to become familiar with fairness–performance tradeoffs when you try to invertene on the model to improve fairness. 
+(Note: The `week3_fairness_tradeoffs.ipynb` notebook is now entirely optional / not required.)
 
-**Bonus Notebook:** 
-- Feel free to check out the fairness evaluation on EHR data done [in this notebook](https://github.com/fairlearn/talks/blob/main/2021_scipy_tutorial/fairness-in-AI-systems-student.ipynb).
+1. Examine the distribution of missing features (per feature and per patient). Compute summary statistics (e.g., fraction missing per patient, per feature).
+2. Analyze how missingness varies across: sex, ethnicity, age, hospital characteristics (e.g., hospitalid, region, bed count). Do certain groups systematically have more or less complete data? Use a statistical test to make a concrete determination. 
+3. Construct a "missingness phenotype". For example, you can define patient groups based on if they have low / medium / high rates of feature missingness, you can cluster using KNN based on binary missingness masks. Visualize and interpret these groups.
+4. Train a classifier model using only missingness indicators (binary features) to predict mortality. Use interpretability tools (i.e., coefficients (for linear models), or SHAP values (for tree-based models)). 
+Identify which missing features are most predictive and assess whether this experiment aligns with clinical intuition.
+5. Based on your findings, argue if missingness is random (uninformative), or structured (reflecting clinical processes, access, or data collection differences). Relate this to MAR, MCAR, and MNAR. 
+6. Discuss how missingness may impact fairness evaluation. 
 
-**Bonus Readings:** 
+**Deliverables:**
+* Progress Report 3 (Due April 26) - a PDF or notebook of all the completed tasks above 
+* Introduction (Due April 23) - see website; this should be focused on this missingness project 
 
-These works provide deeper insight into why fairness tradeoffs arise. They are more theory-heavy, but helpful if you're curious about the limitations of fairness metrics.
-- [On Fairness and Calibration](https://arxiv.org/abs/1709.02012)
-- [Inherent Trade-Offs in the Fair Determination of Risk Scores](https://arxiv.org/abs/1609.05807)
-- [A comparison of approaches to improve worst-case predictive model performance over patient subpopulations](https://www.nature.com/articles/s41598-022-07167-7)
+### Week 5 (April 27 - May 3): Can missingness be a sensitive attribute?
 
+**Goal**:
+Can missingness itself be treated as a “sensitive attribute” for evaluating fairness, as an alternative or complement to race and sex?
 
-*For Progress Report 3 (Due April 26):* Meet with your project group and submit what you all want to accomplish for Week 5. [See the website](https://web.stanford.edu/class/cs197/assignments/project.html#progress-reports) for how we expect project reports to be structured.
+**Tasks**: 
+1. Decide on a way to categorize missingness levels (i.e., using your "phenotype" from Week 4). For a classifier trained to predict mortality, pick one imputaiton strategy (we will analyze this strategy further next week), and analyze the "standard" four metrics of fairness (see A2 above) using the following 3 sensitive attributes: (1) missingness category, (2) race, and (3) sex. Which missingness group perform the best and the worst? How does this performance compare to the best / worst groups defined by race and sex? 
+2. Construct intersectional subgroups: e.g., (race × missingness level), (sex × missingness level), (sex x race x missingness level). Evaluate fairness performance across these groups, and report the bootstrapped variance of these fairness metrics (so we can see how small sample size affects the consistency of fairness metrics). Summarize your findings. 
+3. Repeat these experiments where we look at a different "missingness phenotype" based on a different set of feature missingness. For example, if your original category was based on missingness of ALL variables, evaluate over a new cateogry of missingness of JUST lab variables. 
+4. Reflect: Should missingness be considered a fairness-relevant attribute? Why or why not? 
 
+**Deliverables:**
+* Progress Report 4 (Due May 3) - a PDF or notebook of all the completed tasks above 
+* (Optional) Related Works - based on this project direction, refine your current related works section to focus in on algorihtmic fairness specifically with respect to missing data. You will need to do this eventually, so might be a good idea to work on that this week. 
 
-
-## Weeks 5-10: 
-In the next few weeks, you will expand upon what you have learned so far to propose a novel research project on fairness using the eICU dataset. We will provide a suggested outline for Weeks 5–10 to help you brainstorm new fairness evaluation strategies, metrics, and considerations that are particularly relevant in healthcare settings. For example, in Week 4, we will explore how missing data may itself be an important dimension of fairness that is not captured by standard metrics.
-
-While these weekly themes are meant to guide your thinking, you are not limited to them. You are also welcome to explore alternative directions, including:
-- Proposing new interventions to train or adjust models in order to improve fairness. 
-- Exploring the advanced but under-developed field of causality-based algorithmic fairness, such as path-specific fairness
-- Exploring fair representation learning of tabular or NLP data (note: the eICU dataset does not have free text for its note table)
-- Examining the role of using race in prediction tasks; this is similar to the idea of proximal learning whereby ML uses a variable that is only spurriously correlated with the variables we actually want to use 
-
-*Note*: We will no longer list what assignments are due every week. It is up to you to reference the CS197 website for deadlines. 
-
-<!-- ### Week 5: 
-
-In this week, you will move beyond the standard fairness metrics introduced earlier and explore additional notions of fairness from the literature. Your goal is to select at least three alternative metrics, implement them, and evaluate how they behave in the context of predicting mortality. As you do this, reflect on whether these metrics align with what you believe fairness should mean in this setting. Consider how your conclusions might change if the prediction target Y were different—for example, predicting readmission or length of stay instead of mortality. You should also think carefully about the choice of sensitive attribute A: which attributes are most appropriate for defining fairness in this context, and which are actually available in the dataset?
-
-As one example, you may revisit calibration, which we introduced earlier. A calibrated model produces risk scores that correspond to true outcome probabilities, which is often desirable in clinical settings where decisions are made based on predicted risk. However, you should question whether calibration alone captures what we mean by fairness. Is a well-calibrated model necessarily fair? Conversely, can a model be considered fair under other metrics while still being poorly calibrated? Use your experiments to explore these tensions and discuss your findings with your group. -->
-
-
-### Week 5: 
-
-In this week, you will investigate how missing data may act as a source of bias that could drive unfairness in machine learning models trained on EHR data. Missingness in healthcare is often not random, and may reflect underlying structural factors such as access to care, insurance status, or clinical decision-making patterns. As a result, it may encode information about sensitive attributes even when those attributes are not explicitly included in the model.
-
-One direction is to treat a patient’s missingness pattern itself as a sensitive attribute A. For example, patterns of missing lab values may correlate with differences in care or patient populations. You can explore how fairness metrics behave when defined over these missingness-based groupings, and whether this reveals disparities that are not captured by traditional attributes such as race or gender.
-
-You can also examine how modeling choices interact with missingness. For instance, what happens to fairness metrics if you remove patients with high levels of missing data? Why might this change the results, and what are the potential consequences of excluding these patients? More broadly, reflect on whether a model can realistically be considered "fair" if it is trained on data with systematic missingness, and what this implies for fairness evaluation in real-world healthcare settings.
-
-### Week 6:
-
-In this week, you will investigate how fairness behaves under distribution shift. In real-world healthcare settings, models are often deployed in environments that differ from the data they were trained on, such as different hospitals, time periods, or patient populations. Your goal is to explore whether a model that appears fair on one dataset remains fair when evaluated on a different distribution.
-
-You can use hospital-level information - such as `hospital_region` variable - to trigger distribution shift by training a model on one hospital region (or all but one hospital region) and evaluting on the heldout hospital region. Similarly, you could also analyze temporal shift by splitting based on the `hospitaldischargeyear`. Measure both overall performance when trained on the full data and subgroup performance on a biased dataset (i.e., only trained on data from one hospital region). Do the fairness metrics remain stable? Are Consider whether fairness should be evaluated only on the training distribution, or whether robustness to shift should be part of the definition of fairness. Reflect on the implications of deploying a model that is fair in one setting but may be unfair in another.
-
-
-### Weeks 7-8:
-
-In these weeks, you will begin designing your own notion of fairness. Building on the limitations you have observed in existing metrics, your goal is to propose a new fairness metric or evaluation strategy that better captures what you believe fairness should mean in this healthcare setting. This may involve modifying an existing metric, combining multiple metrics, or introducing a new way of measuring disparities, such as focusing on worst-case subgroup performance, conditioning on clinical context, or incorporating missingness or uncertainty.
-
-You should clearly define your proposed metric, including its mathematical form and intuition, and explain what types of disparities it is intended to capture. Apply your metric to your existing models and compare it to standard fairness metrics. Reflect on when your metric provides additional insight, and when it may fail or produce unintended consequences. This week is less about finding a perfect metric and more about articulating and testing a principled definition of fairness.
-
-In Week 7, you and your group should first select at least three alternative metrics, implement them, and evaluate how they behave in the context of predicting mortality. As you do this, reflect on whether these metrics align with what you believe fairness should mean in this setting. Consider how your conclusions might change if the prediction target Y were different—for example, predicting readmission or length of stay instead of mortality. You should also think carefully about the choice of sensitive attribute A: which attributes are most appropriate for defining fairness in this context, and which are actually available in the dataset?
-
-As one example, you may revisit calibration, which we introduced earlier. A calibrated model produces risk scores that correspond to true outcome probabilities, which is often desirable in clinical settings where decisions are made based on predicted risk. However, you should question whether calibration alone captures what we mean by fairness. Is a well-calibrated model necessarily fair? Conversely, can a model be considered fair under other metrics while still being poorly calibrated? Use your experiments to explore these tensions and discuss your findings with your group. The goal is to start thinking about how you will move beyond the standard fairness metrics introduced earlier and explore additional notions of fairness from the literature. 
-
-
-
-### Week 9-10: 
-
-In this week, you will evaluate your proposed fairness metric on the eICU dataset for the sensitive attributes of your choice and several prediction tasks (such as mortality). Your goal is to test whether your metric meaningfully distinguishes between models and captures important tradeoffs that standard metrics may miss. You should also apply your metric to multiple prediction models (i.e., logistic regression, XGBoost, etc.), including those you have explored in earlier weeks, and compare how models rank under your metric versus existing ones.
-
-You should also examine how your metric behaves under different conditions, such as subgroup stratification, missingness, or distribution shift. Consider whether your metric is stable, interpretable, and useful for decision-making. Reflect on whether optimizing for your metric would lead to better outcomes in practice, and what tradeoffs it introduces. This week should help you refine your proposal and prepare for your final project, where you will present and justify your definition of fairness in a real-world setting.
-
-
+### Week 6 (May 4 - 10): Does imputation affect fairness evaluations?
+### Week 7 (May 11 - 17): TBD
+### Week 8 (May 18 - 24): TBD
+### Week 9 (May 25 - 31): TBD
+### Week 10 (June 1 - 7): TBD
 
 ## D. Project 2: Exploring selection and missing data biases
 
