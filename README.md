@@ -86,7 +86,7 @@ If this process felt slower or more involved than expected, that’s completely 
 ## C. Project 1: Fair ML in healthcare
 
 
-Consider the “standard” algorithmic fairness framework as defined by three key features:
+Consider the "standard" algorithmic fairness framework as defined by three key features:
 * **A1:** Fairness is evaluated with respect to a small set of predefined sensitive attributes, typically race and sex.
 * **A2:** Fairness is measured using a fixed set of standard metrics, such as demographic parity, equal opportunity, equalized odds, and calibration.
 * **A3:** Missing data is treated as a preprocessing issue to be handled before evaluating mordel performance - typically, either by complete-case analysis (dropping patients with missing data) or by imputation. 
@@ -102,7 +102,7 @@ The (revised) schedule for the rest of the quarter is as follows, where each wee
 * **Week 4**: Is missingness random, or informative, in the eICU dataset? 
 * **Week 5**: Can missingness itself be a "sensitive attribute" to evaluate fairness over (an alternative to race / sex from A1)?
 * **Week 6**: How do different missing data handling strategies (A3) affect fairness metrics?  
-* **Week 7**: How can we extend either A1, A2, or A3 to better handle or incorporate missingness? 
+* **Week 7**: How can we extend the "standard" fairness frameworks listed in A1, A2, or A3 to better handle or incorporate missingness? 
 * **Week 8-10**: Experiments / writing 
 
 ### Weeks 1 - 2: 
@@ -159,6 +159,8 @@ Is missingness random, or informative, in the eICU dataset?
 - [Exploring the Inequitable Impact of Data Missingness on Fairness in Machine Learning](https://ieeexplore.ieee.org/document/10920480) - skim
 - [Adapting Fairness Interventions to Missing Values](https://arxiv.org/pdf/2305.19429) - skim
 - [Missing data and multiple imputation in clinical epidemiological research](https://pmc.ncbi.nlm.nih.gov/articles/PMC5358992/) - skim
+
+
 **Tasks**: 
 
 (Note: The `week3_fairness_tradeoffs.ipynb` notebook is now entirely optional / not required.)
@@ -221,6 +223,27 @@ Project Goal: In this project, you will investigate how different forms of selec
 $^{[1]}$: Many different fields have names for this phenomenon. It may also be called *distribution shift*, *data shift*, *dataset bias*, *sample* selection bias, and in some cases, *covariate shift*. In ML, you might see that the field of domain adaptation is relevant for selection bias. The term *selection bias* I am using has its origins in the field of causal inference.
 
 
+
+<!-- Consider the “standard” algorithmic fairness framework as defined by three key features:
+* **A1:** Fairness is evaluated with respect to a small set of predefined sensitive attributes, typically race and sex.
+* **A2:** Fairness is measured using a fixed set of standard metrics, such as demographic parity, equal opportunity, equalized odds, and calibration.
+* **A3:** Missing data is treated as a preprocessing issue to be handled before evaluating mordel performance - typically, either by complete-case analysis (dropping patients with missing data) or by imputation. 
+
+The research project for the remainder of the quarter is: *How can we improve this standard framework to better account for the information and structure contained in missingness?* Rather than treating missing data as something to "fix", this project investigates whether missingness itself reveals important patterns useable for constructing a better algorithmic fairness framework. 
+
+This project can be broken down into several guiding questions:
+* **Q1:** How informative is missingness in the eICU dataset?
+* **Q2:** Where (and how) does the standard fairness framework break under missingness?
+* **Q3:** Can we extend the fairness framework to incorporate missingness?
+
+The (revised) schedule for the rest of the quarter is as follows, where each weeks is framed by the central questions your group will try to answer that week: 
+* **Week 4**: Is missingness random, or informative, in the eICU dataset? 
+* **Week 5**: Can missingness itself be a "sensitive attribute" to evaluate fairness over (an alternative to race / sex from A1)?
+* **Week 6**: How do different missing data handling strategies (A3) affect fairness metrics?  
+* **Week 7**: How can we extend either A1, A2, or A3 to better handle or incorporate missingness? 
+* **Week 8-10**: Experiments / writing  -->
+
+
 ### Weeks 1-2: 
 **Onboarding:** 
 
@@ -268,99 +291,44 @@ $^{[1]}$: Many different fields have names for this phenomenon. It may also be c
 
 
 
-### Week 4: 
+### Week 4 (April 20 - 26): 
+
+(Note: The `week3_missingness.ipynb` notebook is now entirely optional / not required.)
+
+**Goal:**
 
 **Readings:**
-- [Moving Beyond Medical Statistics: A Systematic Review on Missing Data Handling in Electronic Health Records
-](https://pmc.ncbi.nlm.nih.gov/articles/PMC11615160/pdf/hds.0176.pdf)
-- [Assessing Missing Data Assumptions in EHR-Based Studies: A Complex and Underappreciated Task](https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2776905)
-- [Methods for Addressing Missingness in Electronic Health Record Data for Clinical Prediction Models: Comparative Evaluation](https://pmc.ncbi.nlm.nih.gov/articles/PMC12617989/)
-
-**Notebook:** 
-- Walk through the notebook `proj2/week3_missingness.ipynb` to explore why missing data may be a concern in ML, and why simple imputation methods may not work. 
 
 
-*For Progress Report 3 (Due April 26):* Meet with your project group and submit what you all want to accomplish for Week 5. [See the website](https://web.stanford.edu/class/cs197/assignments/project.html#progress-reports) for how we expect project reports to be structured.
+**Tasks**: 
 
 
+**Deliverables:**
+* Progress Report 3 (Due April 26) - a minimum 2-page writeup plus a notebook of all the completed tasks above. As a reminder: $\checkmark+$ = 100% indicates you went above and beyond; $\checkmark$ = 95% indicates basic completeness. 
+* Introduction (Due April 23) - see website.
 
-## Weeks 5-10: 
-In the next few weeks, you will expand upon what you have learned so far to propose a novel research project on fairness using the eICU dataset. We will provide a suggested outline for Weeks 5–10 to help you brainstorm new fairness evaluation strategies, metrics, and considerations that are particularly relevant in healthcare settings. 
-<!-- For example, in Week 4, we will explore how missing data may itself be an important dimension of fairness that is not captured by standard metrics. -->
+### Week 5 (April 27 - May 3): 
 
-While these weekly themes are meant to guide your thinking, you are not limited to them. You are also welcome to explore alternative directions, including:
-- Berkson's bias. In the context of eICU data, this bias points out that we are only observing a subset of patients who are sick enough to be admitted to the ICU.
-- Improving on the weaknesses identified form the paper from Week 2's assigned reading
+**Goal**:
 
-*Note*: We will no longer list what assignments are due every week. It is up to you to reference the CS197 website for deadlines. 
-
-
-### Week 5: 
-
-In this week, you will explore the limitations of reweighting methods as a solution to selection bias. As we touched on in Week 2's notebook, reweighting approaches, including density ratio estimation, aim to correct for differences between training and target distributions by assigning higher importance to certain samples. However, these methods come with challenges.
-
-One key issue is that the estimated weights can be unstable and high-variance, especially when there is limited overlap between the training and target distributions. In these cases, a small number of samples may receive very large weights. 
-
-You can explore this by visualizing the histogram of $P(S=1 | Y_i, X_i)$ for data in the training set. If there are values near 0 or 1, then the training and testing distribution lack overlap and the weights will be unstable. How does model performance change as weights become more extreme?
+**Tasks**: 
 
 
-Finally, consult the literature and propose at least one alternative approach to address these limitations of reweighting. This could include methods such as domain adaptation or model-based methods. 
+**Deliverables:**
+* Progress Report 4 (Due May 3) - a minimum 2-page writeup plus a notebook of all the completed tasks above 
+* (Optional) Related Works - based on this project direction, refine your current related works section.... You will need to do this eventually, so might be a good idea to work on that this week. 
+
+### Week 6 (May 4 - 10): 
+
+**Goal**:
+
+**Tasks**:
+
+**Deliverables:**
+* Progress Report 5 (Due May 10) - a minimum 2-page writeup plus a notebook of all the completed tasks above 
 
 
-### Week 6: 
-
-In this week, you will investigate Berkson’s bias. Berkson’s bias arises when we condition on being in the hospital (or ICU), which can distort the relationship we want to measure (i.e., how covariates predict an outcome). For instance, patient admitted to the ICU tend to have higher disease severity, so our mortality prediction model might overinflate this risk on the non-ICU population. 
-
-
-Start by choosing a proxy for patient severity (for example, number of lab measurements, number of ICU visits within 24 hours, or length of ICU visits within 24 hours). Then:
-- Divide patients into groups based on severity (e.g., low, medium, high)
-- Train a model on one group (e.g., high-severity patients)
-- Evaluate it on another group (e.g., lower-severity patients)
-
-Compare both performance and calibration across these groups. Does the model trained on sicker patients generalize well to less severe patients? Does it systematically over- or under-predict risk?
-
- <!-- ### Week 6:  -->
-
-
-### Weeks 7–8:  
-
-In these weeks, you will begin designing your own approach to addressing selection bias in healthcare data. Building on the knowledge you have observed in earlier weeks (e.g., reweighting instability, bias induced by missing data, Berkson’s bias, and types of dataset shift), your goal is to propose a method or evaluation strategy that improves how models generalize beyond the observed data.
-
-
-Your approach may take several forms. For example, you might:
-- Modify an existing method (e.g., reweighting, imputation, or recalibration) to make it more stable or realistic  
-- Propose a new way of defining or approximating the target population that is more realistic for our healthcare setting  
-- Introduce a strategy that explicitly accounts for missingness or partial observability for accurate prediction of some $Y$ 
-- Develop a diagnostic to detect when a model is likely to fail under selection bias  
-
-You should clearly define your proposed approach, including both its intuition and how it would be implemented. If applicable, describe any assumptions your method relies on, and how those assumptions relate to the realities of EHR data.
-
-Apply your method to your existing models and compare it to standard approaches (such as no correction, simple imputation, or reweighting). Reflect on when your method provides improvements, and when it may fail or introduce new tradeoffs (e.g., variance, instability, or reliance on untestable assumptions).
-
-These weeks are less about finding a perfect solution and more about developing and testing a principled approach to handling selection bias in a realistic healthcare setting.
-
-At the beginning of Week 7, you and your team should also critically examine what assumptions are reasonable when correcting for selection bias in healthcare settings. Specifically, we first consider the scenario where we train a mortality prediction model using eICU data and aim to deploy it across all hospitals in the U.S.
-
-Is this simply a case of covariate shift, or are there other types of dataset shift at play? What factors might differ between the training and deployment populations (e.g., hospital resources, patient demographics, access to care, socioeconomic status)? Are there important variables—such as income or structural determinants of health—that are not captured in the dataset but may influence outcomes?
-
-Next, think carefully about what target data we would realistically have access to at deployment time. Many methods for addressing dataset shift assume access to samples from the target distribution, or even access to both features and outcomes in that distribution. In practice, are these assumptions reasonable?
-
-Discuss with your group:
-- Where would we obtain external target data in a real healthcare setting? How might limited or partial access to the target distribution affect the methods we can use?
-- Given the solutions you've seen so far, which are reasonable in our setting? 
-- Is there a gap in what is realistic and solutions that address that setting? 
-
-### Week 9-10:  
-
-In this week, you will evaluate your proposed method on the eICU dataset across one or more prediction tasks (such as mortality). Your goal is to assess whether your approach improves generalization compared to baseline methods. We recommend looking at generalization across hospital regions or hospitalsids, but you are open to explore other variables such as temporal shift. 
-
-You should:
-- Compare your method against at least one standard approach (e.g., no adjustment, imputation, reweighting)  
-- Evaluate performance across a training and testing shift (i.e., we train on eICU data from all regions but the South, and evaluate on the South eICU data). 
-
-In addition to overall performance, consider whether your method is:
-- Stable (e.g., does it rely on extreme weights or sensitive parameters?)  
-- Realistic (does it require access to data we would not have in practice?)  
-
-Reflect on whether your approach meaningfully improves selection bias, and what tradeoffs it introduces. This week should help you refine your method and prepare for your final project, where you will present and justify your approach in a real-world deployment setting.
-
+### Week 7 (May 11 - 17): TBD
+### Week 8 (May 18 - 24): TBD
+### Week 9 (May 25 - 31): TBD
+### Week 10 (June 1 - 7): TBD
