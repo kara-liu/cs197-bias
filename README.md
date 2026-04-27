@@ -212,33 +212,29 @@ Do different missing data handling strategies lead to different fairness conclus
 ### Week 9 (May 25 - 31): TBD
 ### Week 10 (June 1 - 7): TBD
 
-## D. Project 2: Improving Selection Bias with Group DRO
+## D. Project 2: Selection-Aware Robust Learning for Cross-Hospital Generalization
 
-In this project, we will explore how to handle **selection bias** in real-world data, with a focus on **cross-hospital generalizability**. Selection bias arises when the data we observe is not a random sample of the population we care about $^{[1]}$. 
+In this project, we aim to develop clinical prediction models that generalize across hospitals. For example, we may want to predict mortality risk on patients across the U.S. using EHR data as input, but in practice we only observe data from a subset of hospitals. Models trained on this biased data subsample often fail when deployed to new hospitals.
 
-For example, we may want to predict mortality risk across many hospitals in the U.S., but in practice we only have access to EHR data (e.g., eICU) from a subset of hospitals and patient populations. These datasets are often affected by *selection bias*, in that they are non-random subsets of the general population. For example, patients who interact more frequently with the healthcare system are more likely to be observed, and measurement practices differ across hospitals. As a result, the training data may not be representative of the target population, leading to models that fail to generalize to new clinical environments.
+A key challenge towards model generalization is the presence of *selection bias and distribution shift* in the training data. Consider that patients in EHR data are not representative of the underlying population (e.g., patients with data often have above average healthcare access). Furthermore, hospitals differ in patient mix, measurement practices, coding, and missingness patterns. As a result, the observed training distribution differs from the (unknown) deployment distribution (i.e., a new hospital) both in terms of hospital environments and population composition. This leads to models that might fail to perform in new clinical environments. 
 
-A common approach to improving robustness is **Group DRO**, which optimizes worst-case performance over predefined groups (e.g., race, sex, or hospital). However, standard Group DRO assumes that the relevant sources of distribution shift are fully captured by these observed groups. In settings with selection bias, this assumption may fail: the worst-case test environment may not correspond to any observed group in the training data.
+A common approach to improving robustness is **Group Distributionally Robust Optimization (gDRO)**, which optimizes worst-case model performance over predefined groups (e.g., race, sex, or hospital). However, this requires the causes of the data distribution shift to be fully captured by these observed group labels. In many settings (including hospitals), this assumption is likely violated, as groups defined by hospital ID are likely only a proxy for other sources of shift.
 
-The key question this project seeks to answer is: *How can we improve Group DRO-style robustness methods to better account for selection bias and generalization to new (hospital) environments?* We can further break down this project can be broken down into several guiding questions: 
+The key question this project seeks to answer is: *How can we extend Group DRO to account for selection bias and improve generalization to unseen hospital environments?* We can further break down this project into several key questions:
 
 * **Q1:** Does standard Group DRO improve generalization for cross-site (hospital) settings? (this would motivate the "bit-flip")
-* **Q2:** How can we improve Group DRO to perform better on new hospital environments? Can we extend Group DRO by defining better groups or objective functions based on selection risk? 
+* **Q2:** Can we learn a "latent" driver of dataset shift? 
+   - Are hospital labels sufficient to capture distribution shift, or are they merely a proxy? 
+   - Are there other variables we observe that drive data shift? 
+* **Q3:** Does soft group membership perform better than hard  group membership?
 
-With respect to **Q2**, we may propose to extend Group DRO by incorporating a notion of *selection risk*. You have learned roughly that selection bias is a common source of dataset shift whereby a **selection mechanism** essentially "samples" if a patient will be included in a dataset or not (i.e., imagine a function for Stanford Hospital data that will more likely accept patients sampled from the general U.S. population if they live in the Bay Area, etc.) If we can approximate this selection risk, then we might be able to build a better DRO method. 
-
-One idea is as follows: Define proxy variables for the selection mechanism, such as missing data patterns, hospital / site, simple covariates (e.g., age, severity proxies). Then define groups based on these variables (e.g., clusters or bins). Next, we can estimate a **selection-risk score** $s_g$ for each group: e.g., using a classifier to distinguish training vs. target environments, or using distance / support-based measures. Finally, we can train a model that prioritizes high-risk groups:
-$$
-\min_\theta \max_g \; s_g \cdot \mathbb{E}[\ell(f_\theta(x), y) \mid g]
-$$
-
-where $s_g$ captures how poorly group \(g\) is represented under selection.
+<!-- The (revised) schedule for the rest of the quarter is as follows, where each weeks is framed by the central questions your group will try to answer that week:
 
 * **Week 4:** How does model performance change across hospitals? What evidence is there of selection bias? And does regular group DRO help / hinder this performance?
-* **Week 5:** Can we construct better groupings using proxy selection variables or selection risk scores? 
-* **Week 6:** TODO
-* **Week 7:** TODO
-* **Week 8-10:** TODO
+* **Week 5:** Does assigning a soft group membbership using proxy selection variables improve group DRO?
+* **Week 6:** Does using uncertainity set reweighting help? 
+* **Week 7:** ...?
+* **Week 8-10:** Refinement, analysis, ablation studies -->
 
 ---
 $^{[1]}$: Many different fields have names for this phenomenon. It may also be called *distribution shift*, *data shift*, *dataset bias*, *sample* selection bias, and in some cases, *covariate shift*. In ML, you might see that the field of domain adaptation is relevant for selection bias. The term *selection bias* I am using has its origins in the field of causal inference.
@@ -314,7 +310,8 @@ with TableShift](https://proceedings.neurips.cc/paper_files/paper/2023/file/a76a
    Investigate how patient populations and data collection differ across hospitals. Compare distributions of:
    - demographics (e.g., age, sex, ethnicity)  
    - outcome prevalence (e.g., mortality rate)  
-   - hospital characteristics (if available)  
+   - lab or vitals values 
+   - hospital characteristics
    - missingness summaries (e.g., fraction of missing features)  
 
    Use statistical tests (e.g., KS tests) and visualizations (seaborn plots) to assess whether hospitals differ meaningfully.  
@@ -338,7 +335,7 @@ with TableShift](https://proceedings.neurips.cc/paper_files/paper/2023/file/a76a
 3. **Evaluate standard Group DRO.**  
    Train Group DRO models using at least two different group definitions, for example:
    - demographic groups (e.g., sex, ethnicity, or sex × ethnicity)  
-   - hospital groups  
+   - hospital ids, or hospital region  
 
 
 4. **Compare Group DRO to ERM.**  
@@ -360,22 +357,135 @@ with TableShift](https://proceedings.neurips.cc/paper_files/paper/2023/file/a76a
 * Progress Report 3 (Due April 26) - a minimum 2-page writeup plus a notebook of all the completed tasks above. As a reminder: $\checkmark+$ = 100% indicates you went above and beyond; $\checkmark$ = 95% indicates basic completeness. 
 * Introduction (Due April 23) - see website.
 
-### Week 5 (April 27 - May 3): 
+### Week 5 (April 27 - May 3): Constructing selection-aware groups
 
-**Goal**:
+**Goal:**  
+Can we improve Group DRO performance by constructing better (potentially latent) groups using proxy selection variables? 
 
-**Tasks**: 
 
+Recall that standard Group DRO optimizes:
+    $$\min_f \max_{g \in G} R_g(f)$$
+    $$\text{where } R_g(f) = E[ l(f(X), Y) | G = g ]$$
+
+Here, $g$ is a predefined group label (e.g., hospital ID).
+
+However, hospital identity may not fully capture the dataset shift, as distribution shift across hospitals often arises from complex selection mechanisms (e.g., patient mix, measurement practices). Motivated by this, we instead construct alternative groupings $G$ by identifying variables $C_1 \ldots C_k$ that could be causing dataset shift. We will refer to these variables as **proxy selection variables**. 
+
+
+**Tasks:**
+
+1. **Identify proxy variables for dataset shift**  Select a training dataset consisting of N hospitals and define a held-out hospital (or set of hospitals) for evaluation. We want to identify a set $K=3-10$ proxy selection variables $C_1, ..., C_K$ that may capture selection bias / dataset shift. To do so, you may chose to 
+learn a classifier to find which variables differ most between the training dataset $Y=1$ and held-out dataset $Y=0$ (Note: Obviously you won't have the held-out hospital data in a realistic setting, but this will help us build intuition for what a reasonable proxy selection varaiable set would be!) You could also identify the proxy variables by computing feature-wise distribution shifts between train and heldout data (e.g., using KS tests, mean differences). 
+
+   
+   Briefly analyze your finding. Do you think these variables  reflect selection bias / dataset shift that hospital ID wouldn't capture alone? 
+
+2. **Construct alternative group labels - binning**  
+   Use the identified proxy variables $C$ to define new groupings of patients. 
+
+   - Discretize continuous variables (e.g., age bins, missingness levels)
+   - Define groups as combinations of bins:$G =$ all observed combinations of $C$
+
+   - Optionally include hospital ID: $G =$ all observed combinations of $C$ x  all observed IDs $H$
+
+   Visualize these groups and describe them:
+   - How many groups are there?
+   - What is the size of each group?
+   - Are there very small (rare) groups?
+
+
+
+3. **Evaluate model performance across new groups: ERM**
+
+   First, using your baseline ERM model from Week 4:
+   - compute performance (AUC, etc.) within each group  
+   - identify the worst-performing groups  
+   Discuss: 
+   - Which group reveals the worst-case failures? How does this compare to the worst case failure under just hospital ID groups alone? 
+   - Do proxy groups identify failure modes not captured by hospital ID?
+
+4. **Evaluate model performance across new groups: DRO**
+
+   Train Group DRO using these groups. Compare to ERM and hospital-based Group DRO. If you are unable to train successfully because of group sizes, report that. Discuss your findings.
+
+5. **Construct alternative group labels - clustering**  
+   Instead of discretization, construct groups using clustering. This will establish a "latent" group label that would ideally capture dataset shift such that DRO will then learn a more robust model than predefined labels alone. 
+   
+    Use K-means, GMM, etc. to cluster training data into cluster labels for $G$ based on input data $C$ and hospital ID $H$. (Note: soft group labels - which we will explore next week) would just be the probability returned by these models!) Visualize / report cluster sizes, and investigate if the clusters correspond to patient populations or hospital practices. 
+
+   Then, train Group DRO using these groups. Compare to ERM and hospital-based Group DRO. If you are unable to train successfully because of group sizes, report that. Discuss your findings.
+
+6. **Reflection** Based on your results, discuss:
+   - Do proxy-based groups capture model generalization failures better than hospital ID alone? What does say, if anything, about distribution shift? 
+   - What does this suggest about how groups should be defined for robust learning?
+
+---
 
 **Deliverables:**
 * Progress Report 4 (Due May 3) - a minimum 2-page writeup plus a notebook of all the completed tasks above 
-* (Optional) Related Works - based on this project direction, refine your current related works section.... You will need to do this eventually, so might be a good idea to work on that this week. 
+* (Optional) Related Works - based on this project direction, refine your current related works section. You will need to do this eventually, so might be a good idea to work on that this week. 
 
-### Week 6 (May 4 - 10): 
+### Week 6 (May 4 - 10): Soft group membership 
 
-**Goal**:
+Last week, we explored latent group variables by clustering patients using proxy selection variables. However, those approaches assigned each patient to exactly one group or cluster. This week, we will test whether allowing patients to have soft group membership improves Group DRO performance. This is motivated by the PG-DRO paper, which argues that hard group labels may lose information when group membership is ambiguous. Instead of forcing each example into one group, soft Group DRO lets each example contribute partially to multiple groups.
 
-**Tasks**:
+**Goal:** Does soft group membership improve cross-hospital generalization compared with hard Group DRO?
+
+**Tasks:**
+ 1. **Soft Group DRO with hospital-label groups** First, implement a simple soft Group DRO baseline, similar to what was done in the PG-DRO paper. As a baseline, learn soft group membership $P(h | x)$ using a classifier predicting $h$ from covariates $x$ as the $Q$ function from the paper. Also, define groups using hospital ID (the assumed domain variable) and outcome label (mortality) : $g = (H, Y)$ where H is hospital ID and Y is the outcome label. Report:
+      - average held-out hospital performance
+      - worst-hospital performance
+      - worst-group performance
+      - whether soft membership improves over hard hospital Group DRO
+
+2. **Soft Group DRO with learned latent clusters** Next, use the clustering model from Week 5, let:
+
+   $$q_i(g) = P(G_i = g | H_i, C_i)$$
+
+   be the probability that patient i belongs to latent cluster g, as estimated by your clustering model. Here, $C_i$ represents all proxy selection variables for patient i based on the variables you identified in Week 5.
+
+   Instead of hard Group DRO as last week, where each patient belongs to one group, train soft Group DRO:
+
+    $$\min_f  \max_{g \in G}
+        [ \frac{\sum_{i=1}^n q_{i}(g)\cdot l(f(X_i), Y_i)}{\sum_{i=1}^n q_{i}(g)} ]$$
+   Again, report:
+   - average held-out hospital performance
+   - worst-hospital performance
+   - worst-group performance
+   - whether soft membership improves over hard hospital Group DRO
+
+3. **Add group-size adjustment** Small groups may have noisier risk estimates. Following the Group DRO / PG-DRO literature, try adding a group-size adjustment term $ L / \sqrt n_g$ to both the models trained in 1. and 2. Try several values of $L$. Report whether the adjustment improves worst-hospital or worst-group performance.
+
+4. **Compare several soft group definitions** Note the term $q_{i}(g)$ is meant to capture distribution shift such that the resulting (soft) weighted DRO is robust to a new unseen g'. We hypothesized that ($H, C$) are the features driving distribution shift, i.e., $q_i(g) = P(G_i = g | H_i, C_i)$. We can compare to ther group definitions. Try multiple choices of soft groups. 
+   1. Hospital-only soft groups: $q_i(g) = P(G_i = g | H_i)$
+
+   2. Proxy-variable soft groups: $q_i(g) = P(G_i = g | C_i)$
+
+   5. Error-aware soft groups: The error-aware version asks whether model failures reveal latent groups not captured by hospital ID or proxy variables alone. To capture this residual, let $l_i^{ERM}$ be the loss of the baseline ERM model $f_{ERM}$ on patient i : $l(f_{ERM}(X_i), Y_i)$. Then the group probability is $q_i(g) = P(G_i = g | H_i, C_i, l_i^{ERM})$. 
+
+   For this task, you are free to use any unsupervised grouping method that learns some latent label $g$ like hierarchical clustering or unsupervised nearest neighbors. If you are using KNN, try playing around with the number of centroids. 
+
+5. **Reflection** Now you can compare the following methods:
+   1. ERM
+   2. Hard Group DRO with hospital groups
+   3. Hard Group DRO with Week 5 clusters
+   4. Soft Group DRO with hospital/outcome groups
+   5. Soft Group DRO with latent clusters
+   6. Soft Group DRO with group-size adjustment
+   7. Error-aware soft groups
+
+   For each method, report:
+   - average performance 
+   - worst-hospital performance
+   - worst-group performance
+
+   Reflect: 
+
+   - Does soft group membership improve over hard group membership?
+   - Which group definition gives the best worst-hospital performance?
+   - Does adding group-size adjustment help, or does it over-penalize small groups?
+   - Is hospital ID plus C sufficient to explain dataset shift?
+   - If not, what residual features seem to capture additional latent shift?
 
 **Deliverables:**
 * Progress Report 5 (Due May 10) - a minimum 2-page writeup plus a notebook of all the completed tasks above 
