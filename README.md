@@ -491,7 +491,61 @@ Last week, we explored latent group variables by clustering patients using proxy
 * Progress Report 5 (Due May 10) - a minimum 2-page writeup plus a notebook of all the completed tasks above 
 
 
-### Week 7 (May 11 - 17): TBD
-### Week 8 (May 18 - 24): TBD
-### Week 9 (May 25 - 31): TBD
-### Week 10 (June 1 - 7): TBD
+### Week 7 (May 11 - 17): Final Method Experiments
+This is your final week of experiments before we begin writing up the project. The goal this week is to continue testing our project's hypothesis: Can proxy variables such as demographics, severity, missingness, hospital characteristics, or measurement patterns, better capture the sources of hospital shift than hospital ID alone, and thus improve worst-case cross-hospital generalization beyond our current baselines (i.e., ERM)?
+
+So far, we have compared ERM and Group DRO using hospital ID as the group variable. We also tried using proxy-variable-based groups, but the results were not clearly better than ERM. This does not necessarily mean using proxy variables is a bad idea. When a method does not work, an important part of research is figuring out *why* it did not work. Before we conclude this project, we should test several possible explanations.
+
+
+This week, we will investigate four possible explanations for why proxy-based Group DRO may not have improved performance.
+
+1. Revisit and justify the choice of proxy variables U.
+I am not yet convinced that the current proxy variables you all selected (age, height, and weight), are the variables most responsible for cross-hospital shift. For example, there should be a bar plot or table that quantitatively ranks all possible proxy variables by how much they explain hospital differences. From the top candidates, you can reason qualitatively which top few variables are likely to cause distribution shift - for example, age makes sense, but why height and weight? This can be done by a classifier predicting hospital ID or plotting all statistical tests ranked and selecting the top variables. If you find a better set of proxy variables, you will need to rerun the proxy-based Group DRO experiments using the improved U. [Note: Proxy variables are only used during training, so we don't care about which" variables are "feasible" to obseve in unseen hospitals!]
+
+2. Before concluding that proxy-based groups do not work, we need to make sure our Group DRO implementation itself is reasonably stable. Use hospital ID as the group variable first, try stabilizing the Group DRO model using early stopping and stronger $\ell_2$ regularization (look at Table 1 in the [original paper](https://arxiv.org/pdf/1911.08731), which showed that regularization is helpful in practice to reduce gDRO's instability).
+
+
+3. Group DRO can become unstable when it is optimizing over many small groups, because the worst-group loss may be very noisy. For every grouping strategy we've tried so far (i.e., hospital ID, proxy-based) report the number of groups, minimum group size, and average number of samples for the minimum group for your model (i.e., if you model is training in batches, this is minimum group size divided by the batch size; if your model is running K-fold cross validation, this is minimum group size divided by K, etc. ) If sparsity seems like a problem, you can try one or more of the following:
+   * merge small groups into an "Other: category (I think you have already tried this)
+   * alter the clustering method for better evenness (I do not know how many clusters K you have for proxy-based clusters right now)
+   * something else? 
+
+4. If proxy-based Group DRO still does not work, we should try methods that use $U$ in other ways way. For the first idea, let $C$ be the proxy variables we expect to observe in the testing (held out hospital) distribution - for example, age, or the number of beds. We will try a simple density reweighting method using $C$ where we upweight training patients who look similar to the held-out target hospitals. 
+   * First, train a model using to predict whether a patient comes from the held-out hospital set: $p(S=1 \mid C_i)$ where $S_i = 1$ means patient i is from the target hospitals.
+   * Then define weights: $w_i = \frac{p(S=1 \mid C_i)}{1-p(S=1 \mid C_i)}$. We will then learn the **propensity weighted ERM**: $$\min_f E[w_i \cdot \ell(f(X_i),Y_i)]$$(Side note: if $C$ causes distribution shift, then the weighted ERM actually is equal to if we had optimized ERM under the held out target distribution). 
+   * You will probably need to clip large weights to prevent training instability (clip $w_i$ such that it can't be too small or too large). 
+   * If this helps, then $C$ may capture train-test hospital shift.
+   * You can also try on the full $U$ if you want, since we actually observe all variables in the held-out distribution, to test your theory on $U$ being the cause of distribution shift. 
+5. We will try group DRO but based on groups defined by a single variable if the patient looks very hospital-specific.
+   * First, train a multi-label classifier model using all proxy variables to predict hospital ID: $r_i = \max_h p(H=h \mid U_i)$. Note, high $r_i$ means the patient looks strongly associated with one hospital. 
+   * We will treat the variable $r_i$ as the group, i.e., binning $r_i$ into low, medium, and high groups across all patients. Then traing group DRO on these 3 bins as $g$. 
+   * Using $r_i$, we can also try weighted ERM: $$\min_f E[ r_i \ell(f(X_i),Y_i)]$$. 
+
+The goal is not necessarily to make every method work. The goal is to clearly diagnose what happened and produce evidence for whether proxy variables re useful for improving out-of-hospital robustness.
+
+
+### Week 8 (May 18–24): Collecting Results, Baselines, and Tables
+
+This week, the goal is to finish collecting the main experimental results and turn them into clear, conference-style tables and figures. At this point, we should be moving from "trying ideas" to organizing evidence. A strong paper needs trustworthy baselines, clean comparisons, and ablations that help the reader understand what part of the method is actually helping.
+
+Please run and organize the final set of baseline methods and proxy-variable methods. At minimum, the main results table should compare ERM, hospital-ID Group DROimproved/regularized hospital-ID Group DRO, proxy Group DRO, soft-label group DRO, propensity-weighted ERM, and p(h|U) weighted ERM. You should also include one label-free baseline, such as [CVaR/superquantile DRO](https://arxiv.org/abs/2107.09044) or[ Just Train Twice (JTT)](https://arxiv.org/abs/2010.05893), both which simply upweights the highest-loss training examples without using group labels. You may use existing [libraries](https://github.com/namkoong-lab/dro) for this.
+
+By the end of the week, please prepare **polished** tables and plots. The main table should report average held-out hospital performance, worst-held-out-hospital performance, and standard deviations across random seeds or hospital splits.
+
+This week you should produce a rough outline of the Results section, as it is often easier to write the paper once we know what the final results say. Start by deciding what the main "story: of the results is: Did proxy variables help? Did they help only in some settings? 
+
+
+
+### Week 9 (May 25–31): Writing the First Full Draft
+
+This week, the goal is to turn the results into a first full draft of the paper. Focus first on the Results and Methods sections, since these should be grounded directly in the experiments you have already run. The Methods section should clearly explain the task setup, hospital split strategy, prediction target, baselines, proxy-variable construction, and each robustness method we compare. The Results section should walk the reader through the main table, the worst-hospital analysis, and the ablations.
+
+After the Results and Methods are drafted, work on the Introduction and framing. The paper should motivate the problem as follows: models trained on one set of hospitals often fail to generalize to new hospitals; hospital ID is a common but crude way to define robustness groups; proxy variables \(U\), such as demographics, severity, missingness, measurement patterns, or hospital characteristics, may better capture the mechanisms driving hospital shift. Our project asks whether incorporating these proxy variables into training can improve worst-case out-of-hospital generalization.
+
+By the end of this week, please have a complete rough draft. It does not need to be perfectly polished, but it should include all major sections: Introduction, Related Work if applicable, Methods, Experimental Setup, Results, Discussion, and Limitations. The most important thing is that the draft has a clear narrative and that every major claim is supported by a table, plot, or ablation.
+
+
+
+### Week 10 (June 1–7): Final Writing, Polishing, and Presentation
+
+This week, the goal is to finish the paper and prepare the final presentation. 
