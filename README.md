@@ -206,11 +206,78 @@ Do different missing data handling strategies lead to different fairness conclus
 **Deliverables:**
 * Progress Report 5 (Due May 10) - a minimum 2-page writeup plus a notebook of all the completed tasks above 
 
+### Week 7 (May 11 - 17): Final experiments on missingness intersectional fairness
 
-### Week 7 (May 11 - 17): TBD
-### Week 8 (May 18 - 24): TBD
-### Week 9 (May 25 - 31): TBD
-### Week 10 (June 1 - 7): TBD
+This is our last week of experiments before we start writing the final paper. So far, we have explored several related threads around missing data and algorithmic fairness. In Week 5, we observed that fairness gaps may look different when we stratify patients not only by race or sex, but also by how much data is missing for them. The goal this week is to formalize those analyses for a final paper thesis.
+
+We want to ask whether missingness itself should be treated as an additional axis of fairness. In other words, we want to know whether patients with similar race or sex labels but very different missingness patterns experience different model performance and fairness outcomes.
+
+*Note: this todo list looks long, but it is mostly just cleaning up and repeating experiments from prior weeks.*
+
+1. First, we need to make sure the general modeling setup is clear and reproducible (this was similar to task 1 last week, but I am making it more clear what needs to be done here.)
+   * First we will define two prediction tasks: (1) Mortality prediction and (2) Future troke prediction (you can also pick another health outcome; just make sure you are using *future* 24 hr - 48 hr ICD10 codes, not the diagnoses within the first 24 hrs.) For each task, use approximately 15-100 features $X$ to predict the two outcomes $Y$. You should not include race or hospital beds in the prediction task (sex is ok). 
+   * For the paper appendix, you should a table listing: the features used for each prediction task, missingness distribution of the features (as well as the top and bottom 10 missing features). Also explictly document the missingness rates of all sensitive attributes and all outcomes.
+   * For this first baseline analysis, use either mean or median imputation for numerical variables, and use the most frequent category. For now, also use simple handling of missing values in Y and sensitive attributes A.
+   * Train models for both prediction tasks using either: LogisticRegressionCV (sklearn) or XGBoostClassifier. Use a train / validation split. All fairness metrics should be reported on the validation set.
+   * For each task, report average AUPRC plus standard fairness metric gaps (see below) across the following 3 sensitive attributes: race, sex, number of hospital beds, treated as a proxy for hospital capacity.
+   * The fairness metrics should include calibration gap, and equalized odds gap (TPR gap). (Ask yourself: why do we care about these two metrics specifically here?) For each metric, report the gap as the difference between the maximum group value and the minimum group value. For example, for equalized odds, report the fairnes gap $g_{TPR}$ as $$g_{TPR} = \max_{a \in A} TPR(a) - \min_{a \in A} TPR(a)$$ for sensitive attribute/s based groups $A$. 
+      
+   * The main result from this section should be a table with: 2 prediction tasks x 2 fairness metrics x 3 sensitive attributes.
+
+      You should also report the number of groups for each sensitive attribute, the group with the minimum metric value, and the group with the maximum metric value.
+
+      This table gives us the baseline fairness audit that a standard algorithmic fairness paper might report.
+2. Next, we will extend the fairness audit by treating missingness as an additional fairness-relevant attribute. Instead of only evaluating fairness across race, sex, and hospital bed count, we will evaluate fairness across intersectional groups of the form: sensitive attribute x missingness group. We previously explored this in Week 5. 
+
+   * For the final project, we will only define missingness using variables from the following data sources: patient data, hospital data, labs.
+   * First, recompute the missingness percentages from Week 5. Then define binned missingness groups as low, medium, and high missingness based on tertiles of their missingness percentage.
+   * Second, define missingness clusters using the missingness matrix R, where each row is a patient and each column corresponds to whether a variable is missing. Apply PCA to the missingness matrix. Cluster patients using KMeans on the top principal components. Try multiple values of K and use an elbow plot or silhouette score to pick a reasonable number of clusters.
+   * Then recompute the standard fairness table, but now using the 6 new intersectional missingness groups: race x binned, race x KMeans missingness cluster,... etc. 
+   * Are any gaps larger? Do we learn any new unfairness patterns across race (i.e. race x missingess has higher gaps than just race alone) We are especially interested in cases where the race-only or sex-only fairness gap appears small, but the race x missingness or sex x missingness gap is large. Those cases would support the argument that traditional fairness audits can miss clinically meaningful model failures related to missing data.
+
+
+3. Next, we will evaluate whether the observed fairness gaps are stable across different imputation methods. We have results on median / mean imputation. Repeat all evaluation above  MICE imputation. Note: The imputation procedure (mean imputation, MICE, etc. ) should be fit only on the training data and then applied to the validation data. 
+
+ 4. In the prior experiments, missingness mainly enters the analysis through imputation and group stratification. In this final experiment, we will explicitly add missingness indicators as model features and compare the results to models that only use imputed clinical values. For each task and for mean imputation strategy, double the features of $X$ where each feature $X_j$ also now has the missingness indictator $R_j = 1$ if feature $X_j$ was missing before imputation and $R_j = 0$ otherwise. Compare both the average AUPRC performance plus the two standard fairness metric gaps. Based on these results, we can assess: 
+      * If adding missingness indicators improves overall performance but worsens fairness gaps, this suggests the model may be exploiting missingness patterns in a way that benefits some groups more than others.
+      * If adding missingness indicators barely changes performance or fairness, this suggests that the original imputed values may already capture most of the relevant missingness information.
+      * ... etc. 
+
+### Week 8 (May 18–24): Collecting Results, Tables, and Figures
+
+This week, we should move from trying new analyses to organizing the evidence we already have. As you write the results section, start discussing with your group on what the narrative of the paper is, and how to build the results section to support this narrative. 
+
+For example, the reults should include clean tables / figures of: 
+   * A standard fairness audit table.
+   * A missingness-aware (intersectional groups) fairness audit table.
+   *  An imputation comparison table.
+   *  A missingness-indicator comparison table.
+
+In addition to the tables, you should also make one or two clear plots summarizing the most important fairness gap comparisons from above. For example: 
+- bar plots comparing standard fairness gaps versus missingness-aware fairness gaps,
+- heatmaps of fairness gaps by task, metric, and group definition,
+- (optional) missingness cluster interpretation plots - what does each missingness cluster represent in terms of patient cohorts? This might be helpful for justifying your conclusions
+- plots showing how fairness gaps change across imputation methods,
+- plots comparing imputed-values-only models to imputed-values-plus-missingness-indicator models.
+
+Every possible plot will not be included in the main paper, but we would like to organize all results so that we can decide which findings are central, which belong in the appendix, and which should be dropped.
+
+ Also write a short outline of the Results section: What is the main story? Does missingness reveal fairness failures that are hidden by standard demographic audits? Are the results consistent across tasks and imputation methods?
+
+
+### Week 9 (May 25–31): Writing the First Full Draft
+
+This week, the goal is to turn the results into a first full draft of the paper. Start with the Methods and Results sections, since these should be directly grounded in the experiments. The Methods section should clearly explain the prediction tasks, feature sets, imputation methods, fairness metrics, missingness group definitions, and missingness-indicator experiment. The Results section should walk the reader through the standard fairness audit, the missingness-aware fairness audit, the imputation comparison, and the model comparison with versus without missingness indicators.
+
+After Methods and Results are drafted, work on the Introduction and framing. The paper should motivate the problem as follows: standard fairness audits often focus on demographic groups such as race and sex, but in clinical data, missingness patterns may reflect differences in measurement, access, severity, hospital practice, or data quality. Our project asks whether missingness should be treated as an additional fairness-relevant attribute, and whether ignoring it can hide model failures. By the end of the week, please have a complete rough draft with all major sections: Introduction, Related Work if applicable, Methods, Experimental Setup, Results, Discussion, and Limitations.
+
+
+### Week 10 (June 1–7): Final Writing, Polishing, and Presentation
+
+This week, the goal is to finish the paper and prepare the final presentation. 
+<!-- Focus on making the writing clear, tightening the main claim, and making sure every claim is supported by a table, figure, or concrete result. The final paper should clearly explain what standard fairness audits show, what additional information is revealed by missingness-aware groups, and how imputation or missingness indicators change the conclusions.
+
+Please also polish the figures, table captions, and appendix materials. The appendix should include feature lists, missingness rates, cohort details, and any additional fairness tables that are too large for the main paper. The final presentation should tell the same story as the paper in a simpler form: what question we asked, why missingness matters for fairness, what experiments we ran, what we found, and what the limitations are. -->
 
 ## D. Project 2: Selection-Aware Robust Learning for Cross-Hospital Generalization
 
