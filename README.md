@@ -588,8 +588,6 @@ I am not yet convinced that the current proxy variables you all selected (age, h
    * We will treat the variable $r_i$ as the group, i.e., binning $r_i$ into low, medium, and high groups across all patients. Then traing group DRO on these 3 bins as $g$. 
    * Using $r_i$, we can also try weighted ERM: $$\min_f E[ r_i \ell(f(X_i),Y_i)]$$. 
 
-The goal is not necessarily to make every method work. The goal is to clearly diagnose what happened and produce evidence for whether proxy variables re useful for improving out-of-hospital robustness.
-
 
 ### Week 8 (May 18–24): Collecting Results, Baselines, and Tables
 
